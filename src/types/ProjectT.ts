@@ -5,4 +5,8 @@ export type ProjectT = {
     createdAt: Date | string
     tasks: TaskT[]
     id: string
+    bg: {
+        url: string | null
+        color: string
+    }
 }

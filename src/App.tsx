@@ -1,12 +1,12 @@
-import React from 'react'
+import { HomePage } from 'containers/HomePage'
+import { ProjectPage } from 'containers/ProjectPage'
 import { Routes, Route } from 'react-router-dom'
-import './App.sass'
-import { HomePage } from './containers/HomePage'
 
 function App() {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/projects/:id" element={<ProjectPage />} />
         </Routes>
     )
 }

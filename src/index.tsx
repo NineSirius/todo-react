@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.sass'
+import './styles/index.sass'
+import './styles/variables.sass'
+import './styles/fonts.sass'
 import App from './App'
 import { BrowserRouter } from 'react-router-dom'
 
