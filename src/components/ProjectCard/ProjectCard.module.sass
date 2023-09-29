@@ -1,5 +1,5 @@
 .card
-  min-width: 30%
+  width: 100%
   min-height: 100px
   display: flex
   flex-direction: column
@@ -11,6 +11,12 @@
     backdrop-filter: brightness(60%)
     background: #fff
 
-  h4
-    color: var(--card-title-color)
-    font-size: 1.5rem
+  .title_wrap
+    width: 100%
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+    h4
+      color: var(--card-title-color)
+      font-size: 1.5rem

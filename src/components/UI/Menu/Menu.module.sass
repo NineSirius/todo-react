@@ -1,0 +1,39 @@
+.menu
+  position: relative
+
+  .menu_title
+    display: flex
+    justify-content: center
+    align-items: center
+
+    &:hover
+      cursor: pointer
+
+  .menu_content
+    min-width: 200px
+    position: absolute
+    top: 160%
+    left: 0
+    visibility: hidden
+    opacity: 0
+    background: #fff
+    border-radius: 10px
+    display: flex
+    flex-direction: column
+    z-index: 10
+    overflow: hidden
+    transition: .2s
+
+    &.active
+      top: 130%
+      visibility: visible
+      opacity: 1
+
+    .menu_item
+      display: flex
+      align-items: flex-start
+      padding: 12px 15px
+
+      &:hover
+        cursor: pointer
+        background: #e6e6e6

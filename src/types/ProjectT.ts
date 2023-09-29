@@ -1,12 +1,11 @@
-import { TaskT } from './TaskT'
+import { TaskColumnT } from './TaskT'
 
 export type ProjectT = {
     title: string
     createdAt: Date | string
-    tasks: TaskT[]
+    tasks: TaskColumnT[]
     id: string
     bg: {
-        url: string | null
         color: string
     }
 }

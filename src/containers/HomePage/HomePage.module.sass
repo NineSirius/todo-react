@@ -4,6 +4,55 @@
 
   .projects
     margin-top: 15px
+    display: grid
+    grid-template-columns: repeat(3, 1fr)
+    align-items: center
+    gap: 10px
+
+    .card
+      width: 100%
+      min-height: 100px
+      display: flex
+      justify-content: center
+      align-items: center
+      border-radius: 10px
+      background: #777
+      color: #fff
+      transition: .2s
+
+      &:hover
+        cursor: pointer
+        background: #333
+
+.form
+  display: flex
+  flex-direction: column
+  gap: 10px
+  padding-top: 10px
+
+  label
+    display: flex
+    flex-direction: column
+    gap: 5px
+
+    span
+      text-align: left
+
+    input
+      outline: none
+      padding: 5px 5px
+      border: 1px solid var(--border-color)
+      border-radius: 2px
+
+.delete_wrap
+  display: flex
+  flex-direction: column
+  gap: 10px
+
+  .buttons
     display: flex
     align-items: center
     gap: 10px
+
+    button
+      width: 50%
