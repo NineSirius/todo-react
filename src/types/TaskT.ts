@@ -1,11 +1,8 @@
-export type TaskColumnT = {
-    queue: TaskT[]
-    development: TaskT[]
-    done: TaskT[]
-}
-
 export type TaskT = {
-    id: string
+    id: any
     title: string
     description: string | null
+    column: string
+    position: number
+    createdAt: string
 }
