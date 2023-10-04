@@ -1,17 +1,20 @@
 .modal
-  min-width: 25%
+  max-width: 570px
+  max-height: 100vh
   position: fixed
   top: 50%
   left: 50%
   transform: translate(-50%, -50%) scale(0.8)
-  background: #fff
+  background: #f1f2f4
   visibility: hidden
   opacity: 0
   transition: .2s
-  will-change: transform
   border-radius: 10px
   padding: 15px 10px
   z-index: 11
+  overflow-y: auto
+  color: var(--modal-text-color) !important
+  text-align: left
 
   &.active
     visibility: visible

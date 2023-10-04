@@ -1,3 +1,8 @@
+// Переменные
+$primary-color: var(--primary)
+$task-column-bg: var(--task-column-bg)
+$task-card-bg: var(--task-card-bg)
+
 .projectTitle
   display: flex
   align-items: center
@@ -37,13 +42,15 @@
   margin-top: 15px
   display: grid
   grid-template-columns: repeat(3, 1fr)
+  overflow-x: auto
   gap: 20px
 
 .column
+  min-width: 405px
   display: flex
   flex-direction: column
   gap: 10px
-  background: var(--task-column-bg)
+  background: $task-column-bg
   padding: 10px
   border-radius: 10px
   box-shadow: 0px 3px 10px #d3ecff
@@ -62,7 +69,7 @@
       border-radius: 50%
       font-size: 1.125rem
       color: #fff
-      background: var(--primary)
+      background: $primary-color
 
   &_tasks
     display: flex
@@ -78,18 +85,24 @@
     font-weight: 600
     padding: 10px
     border-radius: 5px
-    transition: .2s
+    transition: 0.2s
 
     &:hover
       cursor: pointer
       background: #f5f5f5
 
-.task_card
+.taskCard
   width: 100%
   padding: 12px
   border-radius: 10px
-  background: var(--task-card-bg)
+  background: $task-card-bg
   box-shadow: 0px 3px 5px #d3ecff
+
+  input
+    border: none
+    background: none
+    width: 100%
+    font-size: 16px
 
   .title_wrap
     display: flex
@@ -97,20 +110,14 @@
     justify-content: space-between
 
 .taskInfo
-  max-width: 570px
-  width: 80vw
+  min-width: 550px
+  width: 100%
   display: flex
   flex-direction: column
-  gap: 5px
   padding: 5px 10px
 
-  & p
-    padding: 0 5px
-
-    .taskInfo_taskNumber
-      font-weight: 700
-
   &_titleWrap
+    margin-top: 5px
     display: flex
 
   &_title
@@ -119,10 +126,50 @@
     outline: none
     padding: 5px
     font-weight: 700
+    background: none
     width: 100%
 
     &:focus
-      outline: 2px solid #333
+
+  &_layout
+    margin-top: 15px
+    display: flex
+    gap: 20px
+
+  &_content
+    width: 70%
+    display: flex
+    flex-direction: column
+    gap: 5px
+
+    p
+      padding: 0 5px
+
+      .taskInfo_taskNumber
+        font-weight: 700
+
+  &_controls
+    width: 30%
+    display: flex
+    flex-direction: column
+    gap: 10px
+
+    &__column
+      display: flex
+      width: 100%
+      flex-direction: column
+      gap: 5px
+
+  @media screen and (max-width: 870px)
+    min-width: unset
+    &_layout
+      flex-direction: column
+
+    &_content
+      width: 100%
+
+    &_controls
+      width: 100%
 
   &_info
     list-style: none
@@ -135,7 +182,19 @@
     display: flex
     flex-direction: column
     padding: 0 5px
-    gap: 5px
+    gap: 15px
+
+    .description
+      max-width: 100%
+
+      p
+        line-height: 150%
+
+    .editor_controls
+      margin-top: 10px
+      display: flex
+      align-items: center
+      gap: 10px
 
 .createTaskForm
   display: flex
@@ -145,10 +204,4 @@
   label
     display: flex
     flex-direction: column
-    gap: 5px
-
-.taskInfo_controls
-  display: flex
-  align-items: center
-  gap: 10px
-  padding: 0 5px
+    gap: 5

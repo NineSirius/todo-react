@@ -217,6 +217,10 @@ export const HomePage = () => {
                             bg={projects[deleteProjectIndex].bg}
                         />
                     )}
+                    <p>Этот проект удалится навсегда, без возможности возврата. </p>
+                    <p>
+                        <strong>Отмена невозможна</strong>
+                    </p>
 
                     <div className={styles.buttons}>
                         <button onClick={() => setDeleteConfirmModal(false)}>Отменить</button>

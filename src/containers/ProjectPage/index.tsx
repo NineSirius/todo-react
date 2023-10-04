@@ -10,7 +10,8 @@ import { format, parseISO } from 'date-fns'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { Button } from 'components/UI/Button'
-import { TaskCard } from './TaskCard'
+import Markdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -345,60 +346,108 @@ export const ProjectPage = () => {
                                 }
                             />
                         </div>
+                        <div className={styles.taskInfo_layout}>
+                            <div className={styles.taskInfo_content}>
+                                <ul className={styles.taskInfo_info}>
+                                    <li>
+                                        Дата создания:{' '}
+                                        {taskInfo &&
+                                            format(
+                                                parseISO(taskInfo.createdAt),
+                                                'dd.MM.yyyy в HH:mm',
+                                            )}
+                                    </li>
+                                </ul>
 
-                        <div className={styles.taskInfo_controls}>
-                            {!taskInfo.isArchived ? (
-                                <Button onClick={() => changeTaskInfo('isArchived', true)}>
-                                    Архивировать
-                                </Button>
-                            ) : (
-                                <>
-                                    <Button onClick={() => changeTaskInfo('isArchived', false)}>
-                                        Вернуть
-                                    </Button>
-                                    <Button onClick={() => deleteTask(taskInfo.id)}>Удалить</Button>
-                                </>
-                            )}
-                        </div>
-
-                        <ul className={styles.taskInfo_info}>
-                            {/* <li>в колонке {taskInfo && taskInfo.column}</li> */}
-                            <li>
-                                Дата создания:{' '}
-                                {taskInfo &&
-                                    format(parseISO(taskInfo.createdAt), 'dd.MM.yyyy в HH:mm')}
-                            </li>
-                        </ul>
-
-                        <div className={styles.taskInfo_description}>
-                            <h3>Описание</h3>
-
-                            <div className={styles.editor}>
-                                <ReactQuill
-                                    theme="snow"
-                                    style={{ maxWidth: '100%' }}
-                                    //@ts-ignore
-                                    value={taskInfo.description}
-                                    onChange={(value) => changeTaskInfo('description', value)}
-                                />
-                                {/* <div className={styles.buttons}>
-                                    <Button
-                                        onClick={() => {
-                                            changeTaskInfo('description', taskInfoDesc)
-                                            setTaskInfoDescEditable(false)
+                                <div
+                                    className={styles.taskInfo_description}
+                                    style={{ marginTop: 15 }}
+                                >
+                                    <div
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
                                         }}
                                     >
-                                        Сохранить
+                                        <h3>Описание</h3>
+
+                                        {!taskInfoDescEditable && (
+                                            <Button
+                                                variant="default"
+                                                onClick={() => {
+                                                    setTaskInfoDescEditable(true)
+                                                    setTaskInfoDesc(taskInfo.description)
+                                                }}
+                                            >
+                                                Изменить
+                                            </Button>
+                                        )}
+                                    </div>
+
+                                    {taskInfoDescEditable ? (
+                                        <div className={styles.editor}>
+                                            <ReactQuill
+                                                theme="snow"
+                                                style={{ maxWidth: '100%' }}
+                                                //@ts-ignore
+                                                value={taskInfoDesc}
+                                                onChange={(value) => setTaskInfoDesc(value)}
+                                            />
+
+                                            <div className={styles.editor_controls}>
+                                                <Button
+                                                    onClick={() => {
+                                                        changeTaskInfo('description', taskInfoDesc)
+                                                        setTaskInfoDescEditable(false)
+                                                    }}
+                                                >
+                                                    Сохранить
+                                                </Button>
+                                                <Button
+                                                    variant="default"
+                                                    onClick={() => {
+                                                        setTaskInfoDesc('')
+                                                        setTaskInfoDescEditable(false)
+                                                    }}
+                                                >
+                                                    Отмена
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <Markdown
+                                            className={styles.description}
+                                            rehypePlugins={[rehypeRaw]}
+                                        >
+                                            {taskInfo.description}
+                                        </Markdown>
+                                    )}
+                                </div>
+                            </div>
+                            <div className={styles.taskInfo_controls}>
+                                <div className={styles.taskInfo_controls__column}>
+                                    <h4>Действия</h4>
+                                    {!taskInfo.isArchived ? (
+                                        <Button
+                                            onClick={() => changeTaskInfo('isArchived', true)}
+                                            variant="default"
+                                        >
+                                            Архивировать
+                                        </Button>
+                                    ) : (
+                                        <>
+                                            <Button
+                                                onClick={() => changeTaskInfo('isArchived', false)}
+                                            >
+                                                Вернуть
+                                            </Button>
+                                        </>
+                                    )}
+                                    <Button onClick={() => deleteTask(taskInfo.id)} variant="error">
+                                        Удалить
                                     </Button>
-                                    <Button
-                                        onClick={() => {
-                                            setTaskInfoDescEditable(false)
-                                            setTaskInfoDesc('')
-                                        }}
-                                    >
-                                        Отменить
-                                    </Button>
-                                </div> */}
+                                </div>
                             </div>
                         </div>
                     </div>

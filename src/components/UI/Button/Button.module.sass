@@ -1,7 +1,7 @@
 .button
   height: max-content
-  padding: 5px 10px
-  border-radius: 5px
+  padding: 7px 10px
+  border-radius: 3px
   border: unset
   outline: unset
   background: var(--primary)
@@ -12,3 +12,14 @@
   &:hover
     cursor: pointer
     background: var(--primary-hover)
+
+  &.default
+    background: #091E420F
+    color: #525252
+
+    &:hover
+      background: #d0d4db
+
+  &.error
+    background: var(--error-color)
+    color: #580000

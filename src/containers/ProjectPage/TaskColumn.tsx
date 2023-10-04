@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import { TaskT } from 'types/TaskT'
 import { TaskCard } from './TaskCard'
 import styles from './ProjectPage.module.sass'
 import { Modal } from 'components/UI/Modal'
 import { Button } from 'components/UI/Button'
+import { CreateTaskCard } from './CreateTaskCard'
 
 interface TaskColumnProps {
     title: string
@@ -21,20 +22,29 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     createTaskFoo,
     openTaskInfoModal,
 }): JSX.Element => {
-    const [taskTitle, setTaskTitle] = useState('')
-    const [taskDescription, setTaskDescription] = useState('')
     const [createTaskModal, setCreateTaskModal] = useState(false)
     const [tasksLength, setTaskLength] = useState<number>(0)
 
-    const toggleCreateTaskModal = () => setCreateTaskModal(!createTaskModal)
+    const createTaskRef = useRef<any>(null)
 
-    const createTaskSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        if (taskTitle !== '') {
-            createTaskFoo(droppableId, taskTitle, taskDescription)
+    const handleClickOutside = (event: MouseEvent) => {
+        if (createTaskRef.current && !createTaskRef.current.contains(event.target as Node)) {
             setCreateTaskModal(false)
         }
     }
+
+    const handleCreateTaskClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation()
+        setCreateTaskModal(true)
+    }
+
+    useEffect(() => {
+        document.addEventListener('click', handleClickOutside)
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside)
+        }
+    }, [])
 
     return (
         <>
@@ -68,12 +78,26 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                         </div>
                     )}
                 </Droppable>
-                <button onClick={toggleCreateTaskModal} className={styles.createTask_button}>
-                    Создать задачу
-                </button>
+
+                <div ref={createTaskRef} id={`${droppableId}-createTaskRef`}>
+                    {createTaskModal ? (
+                        <CreateTaskCard
+                            createTaskFoo={createTaskFoo}
+                            cancel={() => setCreateTaskModal(false)}
+                            column={droppableId}
+                        />
+                    ) : (
+                        <button
+                            onClick={handleCreateTaskClick}
+                            className={styles.createTask_button}
+                        >
+                            Создать задачу
+                        </button>
+                    )}
+                </div>
             </div>
 
-            <Modal show={createTaskModal} onClose={toggleCreateTaskModal}>
+            {/* <Modal show={createTaskModal} onClose={toggleCreateTaskModal}>
                 <form onSubmit={createTaskSubmit} className={styles.createTaskForm}>
                     <h4>Создание задачи</h4>
 
@@ -100,7 +124,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
 
                     <Button>Создать</Button>
                 </form>
-            </Modal>
+            </Modal> */}
         </>
     )
 }

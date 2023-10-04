@@ -15,10 +15,10 @@ export const Navbar = () => {
                 </div>
 
                 <div className={styles.right}>
-                    <Menu title={<span>Тема</span>}>
+                    {/* <Menu title={<span>Тема</span>}>
                         <MenuItem onClick={() => alert('soon')}>Светлая</MenuItem>
                         <MenuItem onClick={() => alert('soon')}>Тёмная</MenuItem>
-                    </Menu>
+                    </Menu> */}
                     <Link to="/">GitHub</Link>
                 </div>
             </div>

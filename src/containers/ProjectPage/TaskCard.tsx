@@ -19,10 +19,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({ title, id, index, onClick })
                         ref={provided.innerRef}
                         {...provided.dragHandleProps}
                         {...provided.draggableProps}
-                        className={styles.task_card}
+                        className={styles.taskCard}
                         onClick={() => onClick(id)}
                     >
-                        <div className={styles.title_wrap}>{title}</div>
+                        <div className={styles.titleWrap}>{title}</div>
                     </div>
                 )}
             </Draggable>
