@@ -4,6 +4,7 @@ import { TaskT } from 'types/TaskT'
 import { TaskCard } from './TaskCard'
 import styles from './ProjectPage.module.sass'
 import { Modal } from 'components/UI/Modal'
+import { Button } from 'components/UI/Button'
 
 interface TaskColumnProps {
     title: string
@@ -23,6 +24,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     const [taskTitle, setTaskTitle] = useState('')
     const [taskDescription, setTaskDescription] = useState('')
     const [createTaskModal, setCreateTaskModal] = useState(false)
+    const [tasksLength, setTaskLength] = useState<number>(0)
 
     const toggleCreateTaskModal = () => setCreateTaskModal(!createTaskModal)
 
@@ -30,13 +32,17 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
         e.preventDefault()
         if (taskTitle !== '') {
             createTaskFoo(droppableId, taskTitle, taskDescription)
+            setCreateTaskModal(false)
         }
     }
 
     return (
         <>
             <div className={styles.column}>
-                <h3>{title}</h3>
+                <div className={styles.columnTitle}>
+                    <h3>{title}</h3>
+                    <span>{tasks.filter((task) => task.isArchived === false).length}</span>
+                </div>
                 <Droppable droppableId={droppableId}>
                     {(provided) => (
                         <div
@@ -45,28 +51,30 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                             id={droppableId}
                             className={styles.column_tasks}
                         >
-                            {tasks.map((task, index) => (
-                                <TaskCard
-                                    position={task.position}
-                                    title={task.title}
-                                    description={task.description}
-                                    id={task.id}
-                                    column={task.column}
-                                    index={index}
-                                    key={task.id}
-                                    onClick={openTaskInfoModal}
-                                    createdAt={task.createdAt}
-                                />
-                            ))}
+                            {tasks.map((task, index) => {
+                                if (!task.isArchived) {
+                                    return (
+                                        <TaskCard
+                                            title={task.title}
+                                            id={task.id}
+                                            index={index}
+                                            key={task.id}
+                                            onClick={openTaskInfoModal}
+                                        />
+                                    )
+                                }
+                            })}
                             {provided.placeholder}
                         </div>
                     )}
                 </Droppable>
-                <button onClick={toggleCreateTaskModal}>Create Task</button>
+                <button onClick={toggleCreateTaskModal} className={styles.createTask_button}>
+                    Создать задачу
+                </button>
             </div>
 
             <Modal show={createTaskModal} onClose={toggleCreateTaskModal}>
-                <form onSubmit={createTaskSubmit}>
+                <form onSubmit={createTaskSubmit} className={styles.createTaskForm}>
                     <h4>Создание задачи</h4>
 
                     <label>
@@ -90,7 +98,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                         />
                     </label>
 
-                    <button>Создать</button>
+                    <Button>Создать</Button>
                 </form>
             </Modal>
         </>

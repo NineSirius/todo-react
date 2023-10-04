@@ -1,4 +1,40 @@
+.projectTitle
+  display: flex
+  align-items: center
+  gap: 10px
+  padding: 20px 10px
+  background: rgba(0, 0, 0, 0.5)
+  border-bottom-left-radius: 10px
+  border-bottom-right-radius: 10px
+
+  &_title
+    outline: none
+    font-size: 1.75rem
+    background: unset
+    border: none
+    padding: 5px
+    max-width: 100%
+    color: #f2f2f2
+    font-weight: 700
+    white-space: nowrap
+    overflow-x: auto
+    text-align: right
+
+    &:hover
+      cursor: pointer
+      background: rgba(255, 255, 255, 0.2)
+      border-radius: 5px
+
+    &:focus
+      outline: 3px solid #333
+
+      &:hover
+        cursor: unset
+        background: none
+        border-radius: 0
+
 .board
+  margin-top: 15px
   display: grid
   grid-template-columns: repeat(3, 1fr)
   gap: 20px
@@ -10,17 +46,50 @@
   background: var(--task-column-bg)
   padding: 10px
   border-radius: 10px
+  box-shadow: 0px 3px 10px #d3ecff
+
+  &Title
+    display: flex
+    align-items: center
+    gap: 10px
+
+    span
+      width: 25px
+      height: 25px
+      display: flex
+      justify-content: center
+      align-items: center
+      border-radius: 50%
+      font-size: 1.125rem
+      color: #fff
+      background: var(--primary)
 
   &_tasks
     display: flex
     flex-direction: column
     gap: 10px
 
+  .createTask_button
+    background: none
+    border: none
+    outline: none
+    text-align: left
+    font-size: 1rem
+    font-weight: 600
+    padding: 10px
+    border-radius: 5px
+    transition: .2s
+
+    &:hover
+      cursor: pointer
+      background: #f5f5f5
+
 .task_card
   width: 100%
-  padding: 10px
+  padding: 12px
   border-radius: 10px
   background: var(--task-card-bg)
+  box-shadow: 0px 3px 5px #d3ecff
 
   .title_wrap
     display: flex
@@ -28,10 +97,58 @@
     justify-content: space-between
 
 .taskInfo
-  min-width: 80%
+  max-width: 570px
+  width: 80vw
   display: flex
   flex-direction: column
+  gap: 5px
   padding: 5px 10px
+
+  & p
+    padding: 0 5px
+
+    .taskInfo_taskNumber
+      font-weight: 700
 
   &_titleWrap
     display: flex
+
+  &_title
+    font-size: 24px
+    border: unset
+    outline: none
+    padding: 5px
+    font-weight: 700
+    width: 100%
+
+    &:focus
+      outline: 2px solid #333
+
+  &_info
+    list-style: none
+    display: flex
+    align-items: center
+    padding: 0 5px
+    gap: 10px
+
+  &_description
+    display: flex
+    flex-direction: column
+    padding: 0 5px
+    gap: 5px
+
+.createTaskForm
+  display: flex
+  flex-direction: column
+  gap: 10px
+
+  label
+    display: flex
+    flex-direction: column
+    gap: 5px
+
+.taskInfo_controls
+  display: flex
+  align-items: center
+  gap: 10px
+  padding: 0 5px

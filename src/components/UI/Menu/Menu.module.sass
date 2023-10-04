@@ -10,19 +10,20 @@
       cursor: pointer
 
   .menu_content
-    min-width: 200px
     position: absolute
     top: 160%
     left: 0
     visibility: hidden
     opacity: 0
     background: #fff
-    border-radius: 10px
+    border-radius: 5px
     display: flex
     flex-direction: column
+    padding: 5px 0
     z-index: 10
     overflow: hidden
     transition: .2s
+    border: 1px solid var(--border-color)
 
     &.active
       top: 130%
@@ -32,7 +33,7 @@
     .menu_item
       display: flex
       align-items: flex-start
-      padding: 12px 15px
+      padding: 12px 20px
 
       &:hover
         cursor: pointer

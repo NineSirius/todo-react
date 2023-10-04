@@ -3,20 +3,14 @@ import styles from './ProjectPage.module.sass'
 import { Draggable } from 'react-beautiful-dnd'
 import { TaskT } from 'types/TaskT'
 
-interface TaskCardProps extends TaskT {
+interface TaskCardProps {
+    title: string
     index: any
     onClick: (id: string) => void
+    id: string
 }
 
-export const TaskCard: React.FC<TaskCardProps> = ({
-    title,
-    id,
-    description,
-    column,
-    index,
-    position,
-    onClick,
-}) => {
+export const TaskCard: React.FC<TaskCardProps> = ({ title, id, index, onClick }) => {
     return (
         <>
             <Draggable draggableId={id} index={index}>

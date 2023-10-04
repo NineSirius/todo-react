@@ -2,6 +2,7 @@ import React from 'react'
 import { ProjectT } from '../../types/ProjectT'
 import styles from './ProjectCard.module.sass'
 import { Menu, MenuItem } from 'components/UI/Menu'
+import MenuIcon from './menu-icon.png'
 
 interface ProjectCardProps extends ProjectT {
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void
@@ -24,17 +25,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <div className={styles.title_wrap}>
                 <h4>{title}</h4>
                 {editProject && deleteProject && (
-                    <Menu
-                        title={
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                height="1.25em"
-                                viewBox="0 0 128 512"
-                            >
-                                <path d="M64 360a56 56 0 1 0 0 112 56 56 0 1 0 0-112zm0-160a56 56 0 1 0 0 112 56 56 0 1 0 0-112zM120 96A56 56 0 1 0 8 96a56 56 0 1 0 112 0z" />
-                            </svg>
-                        }
-                    >
+                    <Menu title={<img src={MenuIcon} alt="menu icon" style={{ width: 25 }} />}>
                         <MenuItem onClick={editProject}>Изменить</MenuItem>
                         <MenuItem onClick={deleteProject}>Удалить</MenuItem>
                         {/* <MenuItem onClick={deleteProject}>Поделиться</MenuItem> */}

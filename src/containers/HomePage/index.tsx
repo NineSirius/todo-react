@@ -13,7 +13,7 @@ export const HomePage = () => {
     const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false)
     const [deleteProjectIndex, setDeleteProjectIndex] = useState<number>(0)
     const [projectName, setProjectName] = useState<string>('')
-    const [projectColor, setProjectColor] = useState<string>('')
+    const [projectColor, setProjectColor] = useState<string>('#999')
 
     useEffect(() => {
         const projects = localStorage.getItem('projects')
@@ -98,7 +98,7 @@ export const HomePage = () => {
         editProject(projectId, { title: projectName, color: projectColor })
         setEditProjectModal(false)
         setProjectName('')
-        setProjectColor('')
+        setProjectColor('#999')
     }
 
     return (
@@ -143,7 +143,7 @@ export const HomePage = () => {
                 show={newProjectModal}
                 onClose={() => {
                     setNewProjectModal(false)
-                    setProjectColor('#000')
+                    setProjectColor('#999')
                     setProjectName('')
                 }}
             >
@@ -174,7 +174,7 @@ export const HomePage = () => {
             <Modal
                 show={editProjectModal}
                 onClose={() => {
-                    setProjectColor('#000')
+                    setProjectColor('#999')
                     setProjectName('')
                     setEditProjectModal(false)
                 }}
