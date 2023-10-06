@@ -19,7 +19,7 @@ export const Navbar = () => {
                         <MenuItem onClick={() => alert('soon')}>Светлая</MenuItem>
                         <MenuItem onClick={() => alert('soon')}>Тёмная</MenuItem>
                     </Menu> */}
-                    <Link to="/">GitHub</Link>
+                    <Link to="https://github.com/NineSirius/todo-react">GitHub</Link>
                 </div>
             </div>
         </div>
