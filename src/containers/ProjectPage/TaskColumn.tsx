@@ -6,6 +6,10 @@ import styles from './ProjectPage.module.sass'
 import { Modal } from 'components/UI/Modal'
 import { Button } from 'components/UI/Button'
 import { CreateTaskCard } from './CreateTaskCard'
+import { Menu, MenuItem } from 'components/UI/Menu'
+import { MdMoreHoriz } from 'react-icons/md'
+import { IconButton } from 'components/UI/IconButtom/IconButton'
+import { enqueueSnackbar } from 'notistack'
 
 interface TaskColumnProps {
     id: string
@@ -57,10 +61,10 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
 
     return (
         <>
-            <div className={styles.column}>
-                <Droppable droppableId={droppableId}>
-                    {(provided) => (
-                        <>
+            <Droppable droppableId={droppableId}>
+                {(provided) => (
+                    <>
+                        <div className={styles.column}>
                             <div className={styles.columnTitle}>
                                 <input
                                     type="text"
@@ -72,9 +76,19 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                                     }
                                     onBlur={() => editColumnTitle(columnTitle, id)}
                                 />
-                                <span>
-                                    {tasks.filter((task) => task.isArchived === false).length}
-                                </span>
+                                <Menu
+                                    title={
+                                        <IconButton variant="default">
+                                            <MdMoreHoriz size={18} />
+                                        </IconButton>
+                                    }
+                                >
+                                    <MenuItem
+                                        onClick={() => enqueueSnackbar('Пока что не доступно')}
+                                    >
+                                        Удалить колонку
+                                    </MenuItem>
+                                </Menu>
                             </div>
                             <div
                                 {...provided.droppableProps}
@@ -97,27 +111,27 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                                 })}
                                 {provided.placeholder}
                             </div>
-                        </>
-                    )}
-                </Droppable>
 
-                <div ref={createTaskRef} id={`${droppableId}-createTaskRef`}>
-                    {createTaskModal ? (
-                        <CreateTaskCard
-                            createTaskFoo={createTaskFoo}
-                            cancel={() => setCreateTaskModal(false)}
-                            column={{ id: id, title: droppableId }}
-                        />
-                    ) : (
-                        <button
-                            onClick={handleCreateTaskClick}
-                            className={styles.createTask_button}
-                        >
-                            Создать задачу
-                        </button>
-                    )}
-                </div>
-            </div>
+                            <div ref={createTaskRef} id={`${droppableId}-createTaskRef`}>
+                                {createTaskModal ? (
+                                    <CreateTaskCard
+                                        createTaskFoo={createTaskFoo}
+                                        cancel={() => setCreateTaskModal(false)}
+                                        column={{ id: id, title: droppableId }}
+                                    />
+                                ) : (
+                                    <button
+                                        onClick={handleCreateTaskClick}
+                                        className={styles.createTask_button}
+                                    >
+                                        Создать задачу
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    </>
+                )}
+            </Droppable>
 
             {/* <Modal show={createTaskModal} onClose={toggleCreateTaskModal}>
                 <form onSubmit={createTaskSubmit} className={styles.createTaskForm}>

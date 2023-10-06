@@ -41,7 +41,7 @@ export const CreateTaskCard: React.FC<createTaskCardProps> = ({
                 >
                     Добавить карточку
                 </Button>
-                <IconButton onClick={cancel}>
+                <IconButton onClick={cancel} variant="default">
                     <MdClose size={16} />
                 </IconButton>
             </div>

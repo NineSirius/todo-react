@@ -15,6 +15,8 @@ import rehypeRaw from 'rehype-raw'
 import { TaskColumnT } from 'types/TaskColumnT'
 import { CreateTaskColumn } from './CreateTaskColumn'
 import { v4 as uuidv4 } from 'uuid'
+import { MdOutlineArchive } from 'react-icons/md'
+import { enqueueSnackbar } from 'notistack'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -315,7 +317,9 @@ export const ProjectPage = () => {
                 >
                     {projectInfo?.title}
                 </div>
-                <Button onClick={() => setArchiveModal(true)}>Архив</Button>
+                <Button onClick={() => setArchiveModal(true)} variant="default">
+                    <MdOutlineArchive size={16} /> Архив
+                </Button>
             </div>
             <div className={styles.board}>
                 <DragDropContext onDragEnd={handleDragEnd}>
