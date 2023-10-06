@@ -4,7 +4,7 @@ import { Draggable } from 'react-beautiful-dnd'
 import { TaskT } from 'types/TaskT'
 
 interface TaskCardProps {
-    title: string
+    title: React.ReactNode
     index: any
     onClick: (id: string) => void
     id: string

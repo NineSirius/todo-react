@@ -34,6 +34,15 @@ export const HomePage = () => {
             createdAt: new Date(),
             tasks: [],
             id: `${title.toLowerCase()}-${Math.random()}`,
+            columns: [
+                { title: 'Queue', id: '90648336-634e-11ee-8c99-0242ac120002', tasks: [] },
+                {
+                    title: 'Development',
+                    id: 'ae8c6248-634e-11ee-8c99-0242ac120002',
+                    tasks: [],
+                },
+                { title: 'Done', id: 'b7ac8b0a-634e-11ee-8c99-0242ac120002', tasks: [] },
+            ],
             bg: {
                 color: color,
             },
@@ -141,13 +150,13 @@ export const HomePage = () => {
 
             <Modal
                 show={newProjectModal}
+                title={<h4>Создание проекта</h4>}
                 onClose={() => {
                     setNewProjectModal(false)
                     setProjectColor('#999')
                     setProjectName('')
                 }}
             >
-                <h4>Создание проекта</h4>
                 <form onSubmit={newProjectSubmit} className={styles.form}>
                     <label>
                         <span>Название проекта*</span>
@@ -173,13 +182,13 @@ export const HomePage = () => {
 
             <Modal
                 show={editProjectModal}
+                title={<h4>Изменение проекта</h4>}
                 onClose={() => {
                     setProjectColor('#999')
                     setProjectName('')
                     setEditProjectModal(false)
                 }}
             >
-                <h4>Изменение проекта</h4>
                 <form onSubmit={editProjectSubmit} className={styles.form}>
                     <label>
                         <span>Название проекта*</span>
@@ -203,13 +212,17 @@ export const HomePage = () => {
                 </form>
             </Modal>
 
-            <Modal show={deleteConfirmModal} onClose={() => setDeleteConfirmModal(false)}>
+            <Modal
+                show={deleteConfirmModal}
+                onClose={() => setDeleteConfirmModal(false)}
+                title={<h4>Удаление проекта</h4>}
+            >
                 <div className={styles.delete_wrap}>
-                    <h4>Удаление проекта</h4>
                     <p>Вы действительно хотите удалить этот проект</p>
 
                     {projects && projects[deleteProjectIndex] && (
                         <ProjectCard
+                            columns={projects[deleteProjectIndex].columns}
                             title={projects[deleteProjectIndex].title}
                             id={projects[deleteProjectIndex].id}
                             tasks={projects[deleteProjectIndex].tasks}

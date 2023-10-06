@@ -12,6 +12,9 @@ import 'react-quill/dist/quill.snow.css'
 import { Button } from 'components/UI/Button'
 import Markdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import { TaskColumnT } from 'types/TaskColumnT'
+import { CreateTaskColumn } from './CreateTaskColumn'
+import { v4 as uuidv4 } from 'uuid'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -34,6 +37,7 @@ export const ProjectPage = () => {
     const [taskInfoDesc, setTaskInfoDesc] = useState<string>('')
     const [taskInfoDescEditable, setTaskInfoDescEditable] = useState<boolean>(false)
     const [archiveModal, setArchiveModal] = useState<boolean>(false)
+    const [taskColumns, setTaskColumns] = useState<TaskColumnT[]>([])
 
     const inputRef = useRef<HTMLDivElement>(null)
     const { id } = useParams()
@@ -62,120 +66,101 @@ export const ProjectPage = () => {
 
                 localStorage.setItem('projects', JSON.stringify(updatedProjects))
             }
-
-            renderTasksFromProject(projectInfo)
         }
     }
+
+    const renderTasksFromProject = (project: ProjectT) => {
+        setTaskColumns(
+            project.columns.map((column) => {
+                return {
+                    ...column,
+                    tasks: project.tasks
+                        .filter((task) => task.column.toLowerCase() === column.title.toLowerCase())
+                        .sort((x, y) => x.position - y.position),
+                }
+            }),
+        )
+    }
+
+    const initialColumnsState = [
+        { id: 'dsa82ui381', title: 'queue', tasks: [] },
+        { id: '2312dsa', title: 'development', tasks: [] },
+        { id: '213189dsa2]q', title: 'done', tasks: [] },
+    ]
 
     useEffect(() => {
         const projects = localStorage.getItem('projects')
         if (projects) {
             const parsedProjects = JSON.parse(projects)
-            const project = parsedProjects.find((item: ProjectT) => item.id === id)
+            const project: ProjectT = parsedProjects.find((item: ProjectT) => item.id === id)
             if (project) {
                 setProjectInfo(project)
-                renderTasksFromProject(project)
+                if (project.columns) {
+                    renderTasksFromProject(project)
+                } else {
+                    setTaskColumns(initialColumnsState)
+                }
             }
         }
     }, [id])
 
-    const renderTasksFromProject = (project: ProjectT) => {
-        const queueTasks = project.tasks.filter((task: TaskT) => task.column === 'queue')
-        const doneTasks = project.tasks.filter((task: TaskT) => task.column === 'done')
-        const developmentTasks = project.tasks.filter(
-            (task: TaskT) => task.column === 'development',
-        )
-
-        setQueue(sortTasksByPosition(queueTasks))
-        setDone(sortTasksByPosition(doneTasks))
-        setDevelopment(sortTasksByPosition(developmentTasks))
-    }
-
     const handleDragEnd = (result: any) => {
+        console.log(result)
+
         if (!result.destination) return
 
         const { source, destination } = result
         const movedTask = projectInfo?.tasks.find((task) => task.id === result.draggableId)
 
         if (source.droppableId === destination.droppableId && movedTask) {
-            const updatedTasks = reorder(
-                source.droppableId === 'queue'
-                    ? queue
-                    : source.droppableId === 'done'
-                    ? done
-                    : development,
-                source.index,
-                destination.index,
-            )
+            const sourceColumn = taskColumns.filter(
+                (column) => column.title === source.droppableId,
+            )[0]
+            console.log(sourceColumn)
 
-            updatedTasks.forEach((task, index) => {
-                task.position = index
-            })
-
-            switch (source.droppableId) {
-                case 'queue':
-                    setQueue(updatedTasks)
-                    break
-                case 'done':
-                    setDone(updatedTasks)
-                    break
-                case 'development':
-                    setDevelopment(updatedTasks)
-                    break
-                default:
-                    break
+            if (sourceColumn) {
+                const updatedTasks = reorder(sourceColumn.tasks, source.index, destination.index)
+                updatedTasks.forEach((task, index) => {
+                    task.position = index
+                })
+                sourceColumn.tasks = updatedTasks
             }
+
+            setTaskColumns((prev: any) => {
+                const taskColumnsCopy = [...prev]
+                const index = taskColumnsCopy.findIndex((column) => column.id === sourceColumn.id)
+                taskColumns[index] = sourceColumn
+                return taskColumnsCopy
+            })
         } else if (movedTask) {
             movedTask.column = destination.droppableId
             movedTask.position = destination.index
 
-            const sourceColumnTasks =
-                source.droppableId === 'queue'
-                    ? queue
-                    : source.droppableId === 'done'
-                    ? done
-                    : development
+            const sourceColumnTasks = taskColumns.filter(
+                (column) => column.title === source.droppableId,
+            )[0]
+            const destinationColumnTasks = taskColumns.filter(
+                (column) => column.title === destination.droppableId,
+            )[0]
 
-            const destinationColumnTasks =
-                destination.droppableId === 'queue'
-                    ? queue
-                    : destination.droppableId === 'done'
-                    ? done
-                    : development
-
-            const updatedSourceTasks = [...sourceColumnTasks]
+            const updatedSourceTasks = [...sourceColumnTasks.tasks]
             updatedSourceTasks.splice(source.index, 1)
 
-            const updatedDestinationTasks = [...destinationColumnTasks]
+            const updatedDestinationTasks = [...destinationColumnTasks.tasks]
             updatedDestinationTasks.splice(destination.index, 0, movedTask)
 
-            switch (source.droppableId) {
-                case 'queue':
-                    setQueue(updatedSourceTasks)
-                    break
-                case 'done':
-                    setDone(updatedSourceTasks)
-                    break
-                case 'development':
-                    setDevelopment(updatedSourceTasks)
-                    break
-                default:
-                    break
-            }
-
-            switch (destination.droppableId) {
-                case 'queue':
-                    setQueue(updatedDestinationTasks)
-                    break
-                case 'done':
-                    setDone(updatedDestinationTasks)
-                    break
-                case 'development':
-                    setDevelopment(updatedDestinationTasks)
-                    break
-                default:
-                    break
-            }
+            setTaskColumns((prev) => {
+                const taskColumnsCopy = [...prev]
+                const sourceColumnIndex = taskColumnsCopy.findIndex(
+                    (column) => column.id === sourceColumnTasks.id,
+                )
+                const destinationColumnIndex = taskColumnsCopy.findIndex(
+                    (column) => column.id === destinationColumnTasks.id,
+                )
+                taskColumnsCopy[sourceColumnIndex].tasks = updatedSourceTasks
+                taskColumnsCopy[destinationColumnIndex].tasks = updatedDestinationTasks
+                return taskColumnsCopy
+            })
         }
 
         saveProjectInfo()
@@ -206,19 +191,29 @@ export const ProjectPage = () => {
             projectInfoCopy.tasks.push(newTask)
             setProjectInfo(projectInfoCopy)
 
-            switch (column) {
-                case 'queue':
-                    setQueue([...queue, newTask])
-                    break
-                case 'done':
-                    setDone([...done, newTask])
-                    break
-                case 'development':
-                    setDevelopment([...development, newTask])
-                    break
-                default:
-                    break
+            setTaskColumns((prev: TaskColumnT[]) => {
+                const taskColumnsCopy = [...prev]
+                const index = taskColumnsCopy.findIndex((col) => col.title === column)
+                taskColumnsCopy[index].tasks.push(newTask)
+                return taskColumnsCopy
+            })
+
+            saveProjectInfo()
+        }
+    }
+
+    const createColumn = (columnName: string) => {
+        if (projectInfo) {
+            const newColumn: TaskColumnT = {
+                title: columnName,
+                id: uuidv4(),
+                tasks: [],
             }
+
+            setProjectInfo((prev: any) => {
+                return { ...prev, columns: [...prev.columns, newColumn] }
+            })
+            setTaskColumns((prev) => [...prev, newColumn])
 
             saveProjectInfo()
         }
@@ -273,70 +268,63 @@ export const ProjectPage = () => {
             }
             saveProjectInfo()
             setTaskInfoModal(false)
+            renderTasksFromProject(projectInfo)
         }
     }
 
     return (
         <>
-            <div className="container">
-                <div className={styles.projectTitle}>
-                    <div
-                        ref={inputRef}
-                        onKeyPress={handleKeyPress}
-                        onBlur={handleBlur}
-                        contentEditable
-                        className={styles.projectTitle_title}
-                    >
-                        {projectInfo?.title}
-                    </div>
-                    <Button onClick={() => setArchiveModal(true)}>Архив</Button>
+            <div className={styles.projectTitle}>
+                <div
+                    ref={inputRef}
+                    onKeyPress={handleKeyPress}
+                    onBlur={handleBlur}
+                    contentEditable
+                    className={styles.projectTitle_title}
+                >
+                    {projectInfo?.title}
                 </div>
-                <div className={styles.board}>
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <TaskColumn
-                            title="Queue"
-                            droppableId="queue"
-                            tasks={queue}
-                            createTaskFoo={createTask}
-                            openTaskInfoModal={openTaskInfoModal}
-                        />
-
-                        <TaskColumn
-                            title="Development"
-                            droppableId="development"
-                            tasks={development}
-                            createTaskFoo={createTask}
-                            openTaskInfoModal={openTaskInfoModal}
-                        />
-
-                        <TaskColumn
-                            title="Done"
-                            droppableId="done"
-                            tasks={done}
-                            createTaskFoo={createTask}
-                            openTaskInfoModal={openTaskInfoModal}
-                        />
-                    </DragDropContext>
-                </div>
+                <Button onClick={() => setArchiveModal(true)}>Архив</Button>
+            </div>
+            <div className={styles.board}>
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    {taskColumns &&
+                        taskColumns.map((column: TaskColumnT) => (
+                            <TaskColumn
+                                title={column.title}
+                                droppableId={column.title}
+                                tasks={column.tasks}
+                                createTaskFoo={createTask}
+                                openTaskInfoModal={openTaskInfoModal}
+                            />
+                        ))}
+                    <CreateTaskColumn createColumn={createColumn} />
+                </DragDropContext>
             </div>
 
             <Modal
+                title={
+                    <p>
+                        Задача номер{' '}
+                        <span className={styles.taskInfo_taskNumber}>
+                            {taskInfo && taskInfo.number}
+                        </span>
+                    </p>
+                }
                 show={taskInfoModal && taskInfo !== null}
                 onClose={() => {
                     setTaskInfoModal(false)
                     setTaskInfoDescEditable(false)
                     setTaskInfoDesc('')
                     saveTaskInfo()
-
+                    if (projectInfo) {
+                        renderTasksFromProject(projectInfo)
+                    }
                     setTimeout(() => setTaskInfo(null), 300)
                 }}
             >
                 {taskInfo && (
                     <div className={styles.taskInfo}>
-                        <p>
-                            Задача номер{' '}
-                            <span className={styles.taskInfo_taskNumber}>{taskInfo.number}</span>
-                        </p>
                         <div className={styles.taskInfo_titleWrap}>
                             <input
                                 className={styles.taskInfo_title}

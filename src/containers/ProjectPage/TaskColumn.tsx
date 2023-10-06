@@ -49,33 +49,37 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     return (
         <>
             <div className={styles.column}>
-                <div className={styles.columnTitle}>
-                    <h3>{title}</h3>
-                    <span>{tasks.filter((task) => task.isArchived === false).length}</span>
-                </div>
                 <Droppable droppableId={droppableId}>
                     {(provided) => (
-                        <div
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            id={droppableId}
-                            className={styles.column_tasks}
-                        >
-                            {tasks.map((task, index) => {
-                                if (!task.isArchived) {
-                                    return (
-                                        <TaskCard
-                                            title={task.title}
-                                            id={task.id}
-                                            index={index}
-                                            key={task.id}
-                                            onClick={openTaskInfoModal}
-                                        />
-                                    )
-                                }
-                            })}
-                            {provided.placeholder}
-                        </div>
+                        <>
+                            <div className={styles.columnTitle}>
+                                <h3>{title}</h3>
+                                <span>
+                                    {tasks.filter((task) => task.isArchived === false).length}
+                                </span>
+                            </div>
+                            <div
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                                id={droppableId}
+                                className={styles.column_tasks}
+                            >
+                                {tasks.map((task, index) => {
+                                    if (!task.isArchived) {
+                                        return (
+                                            <TaskCard
+                                                title={task.title}
+                                                id={task.id}
+                                                index={index}
+                                                key={task.id}
+                                                onClick={openTaskInfoModal}
+                                            />
+                                        )
+                                    }
+                                })}
+                                {provided.placeholder}
+                            </div>
+                        </>
                     )}
                 </Droppable>
 

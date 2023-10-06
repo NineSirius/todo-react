@@ -16,6 +16,16 @@
   color: var(--modal-text-color) !important
   text-align: left
 
+  &_title
+    display: flex
+    align-items: center
+    justify-content: space-between
+
+    .closeBtn
+      display: flex
+      justify-content: center
+      align-items: center
+
   &.active
     visibility: visible
     transform: translate(-50%, -50%) scale(1)
