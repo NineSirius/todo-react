@@ -132,35 +132,6 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                     </>
                 )}
             </Droppable>
-
-            {/* <Modal show={createTaskModal} onClose={toggleCreateTaskModal}>
-                <form onSubmit={createTaskSubmit} className={styles.createTaskForm}>
-                    <h4>Создание задачи</h4>
-
-                    <label>
-                        <span>Заголовок задачи*</span>
-                        <input
-                            type="text"
-                            required
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setTaskTitle(e.target.value)
-                            }
-                        />
-                    </label>
-
-                    <label>
-                        <span>Описание задачи*</span>
-                        <input
-                            type="text"
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                setTaskDescription(e.target.value)
-                            }
-                        />
-                    </label>
-
-                    <Button>Создать</Button>
-                </form>
-            </Modal> */}
         </>
     )
 }
