@@ -2,6 +2,29 @@ $primary-color: var(--primary)
 $task-column-bg: var(--task-column-bg)
 $task-card-bg: var(--task-card-bg)
 
+.input
+  font-size: 1.25rem
+  background: unset
+  border: none
+  padding: 5px
+  max-width: 100%
+  font-weight: 700
+  white-space: nowrap
+  overflow-x: auto
+
+  &:hover
+    cursor: pointer
+    background: rgba(255, 255, 255, 0.2)
+    border-radius: 5px
+
+    &:focus
+      outline: 3px solid #333
+
+      &:hover
+        cursor: unset
+        background: none
+        border-radius: 0
+
 .projectTitle
   display: flex
   align-items: center
@@ -51,6 +74,12 @@ $task-card-bg: var(--task-card-bg)
   background: $task-column-bg
   height: max-content
   transition: .2s
+
+  &_controls
+    margin-top: 10px
+    display: flex
+    align-items: center
+    gap: 10px
 
   &:hover
     cursor: pointer

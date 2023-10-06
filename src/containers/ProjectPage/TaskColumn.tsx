@@ -8,21 +8,30 @@ import { Button } from 'components/UI/Button'
 import { CreateTaskCard } from './CreateTaskCard'
 
 interface TaskColumnProps {
+    id: string
     title: string
     tasks: TaskT[]
     droppableId: string
-    createTaskFoo: (column: string, title: string, description?: string) => void
+    createTaskFoo: (
+        column: { title: string; id: string },
+        title: string,
+        description?: string,
+    ) => void
     openTaskInfoModal: (id: string) => void
+    editColumnTitle: (columnTitle: string, columnId: string) => void
 }
 
 export const TaskColumn: React.FC<TaskColumnProps> = ({
+    id,
     title,
     tasks,
     droppableId,
     createTaskFoo,
     openTaskInfoModal,
+    editColumnTitle,
 }): JSX.Element => {
     const [createTaskModal, setCreateTaskModal] = useState(false)
+    const [columnTitle, setColumnTitle] = useState<string>(title)
     const [tasksLength, setTaskLength] = useState<number>(0)
 
     const createTaskRef = useRef<any>(null)
@@ -53,7 +62,16 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                     {(provided) => (
                         <>
                             <div className={styles.columnTitle}>
-                                <h3>{title}</h3>
+                                <input
+                                    type="text"
+                                    className={styles.input}
+                                    value={columnTitle}
+                                    placeholder="Введите заголовок колонки"
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                                        setColumnTitle(e.target.value)
+                                    }
+                                    onBlur={() => editColumnTitle(columnTitle, id)}
+                                />
                                 <span>
                                     {tasks.filter((task) => task.isArchived === false).length}
                                 </span>
@@ -88,7 +106,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                         <CreateTaskCard
                             createTaskFoo={createTaskFoo}
                             cancel={() => setCreateTaskModal(false)}
-                            column={droppableId}
+                            column={{ id: id, title: droppableId }}
                         />
                     ) : (
                         <button

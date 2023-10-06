@@ -75,7 +75,7 @@ export const ProjectPage = () => {
                 return {
                     ...column,
                     tasks: project.tasks
-                        .filter((task) => task.column.toLowerCase() === column.title.toLowerCase())
+                        .filter((task) => task.column.id === column.id)
                         .sort((x, y) => x.position - y.position),
                 }
             }),
@@ -166,42 +166,6 @@ export const ProjectPage = () => {
         saveProjectInfo()
     }
 
-    const createTask = (column: string, title: string, description?: string) => {
-        if (projectInfo) {
-            const newTask: TaskT = {
-                id: Date.now().toString(),
-                title: title,
-                description: description ? description : '',
-                column,
-                position: 0,
-                createdAt: new Date().toJSON(),
-                isArchived: false,
-                number: projectInfo.tasks.length + 1,
-                isCompleted: false,
-            }
-
-            newTask.position =
-                column === 'queue'
-                    ? queue.length
-                    : column === 'done'
-                    ? done.length
-                    : development.length
-
-            const projectInfoCopy = { ...projectInfo }
-            projectInfoCopy.tasks.push(newTask)
-            setProjectInfo(projectInfoCopy)
-
-            setTaskColumns((prev: TaskColumnT[]) => {
-                const taskColumnsCopy = [...prev]
-                const index = taskColumnsCopy.findIndex((col) => col.title === column)
-                taskColumnsCopy[index].tasks.push(newTask)
-                return taskColumnsCopy
-            })
-
-            saveProjectInfo()
-        }
-    }
-
     const createColumn = (columnName: string) => {
         if (projectInfo) {
             const newColumn: TaskColumnT = {
@@ -214,6 +178,73 @@ export const ProjectPage = () => {
                 return { ...prev, columns: [...prev.columns, newColumn] }
             })
             setTaskColumns((prev) => [...prev, newColumn])
+
+            saveProjectInfo()
+        }
+    }
+
+    const editColumnTitle = (columnTitle: string, columnId: string) => {
+        setTaskColumns((prev: TaskColumnT[]) => {
+            const taskColumnsCopy = [...prev]
+            const index = taskColumnsCopy.findIndex((column) => column.id === columnId)
+            taskColumnsCopy[index].title = columnTitle
+
+            if (projectInfo) {
+                setProjectInfo((prev: any) => {
+                    const projectInfoCopy = { ...prev }
+                    projectInfoCopy.columns[index].title = columnTitle
+                    projectInfoCopy.tasks = projectInfoCopy.tasks.map((task: TaskT) => {
+                        if (task.column.id === columnId) {
+                            return { ...task, column: { title: columnTitle, id: columnId } }
+                        } else {
+                            return { ...task }
+                        }
+                    })
+
+                    return projectInfoCopy
+                })
+            }
+            return taskColumnsCopy
+        })
+        saveProjectInfo()
+    }
+
+    const createTask = (
+        column: { id: string; title: string },
+        title: string,
+        description?: string,
+    ) => {
+        if (projectInfo) {
+            const newTask: TaskT = {
+                id: Date.now().toString(),
+                title: title,
+                description: description ? description : '',
+                column: {
+                    title: column.title,
+                    id: column.id,
+                },
+                position: 0,
+                createdAt: new Date().toJSON(),
+                isArchived: false,
+                number: projectInfo.tasks.length + 1,
+                isCompleted: false,
+            }
+
+            const destinationColumnIndex = taskColumns.findIndex(
+                (taskColumn) => taskColumn.id === column.id,
+            )
+            newTask.position = taskColumns[destinationColumnIndex].tasks.length
+
+            const projectInfoCopy = { ...projectInfo }
+            projectInfoCopy.tasks.push(newTask)
+            setProjectInfo(projectInfoCopy)
+
+            setTaskColumns((prev: TaskColumnT[]) => {
+                const taskColumnsCopy = [...prev]
+                const index = taskColumnsCopy.findIndex((col) => col.title === column.title)
+                taskColumnsCopy[index].tasks.push(newTask)
+                return taskColumnsCopy
+            })
 
             saveProjectInfo()
         }
@@ -291,11 +322,14 @@ export const ProjectPage = () => {
                     {taskColumns &&
                         taskColumns.map((column: TaskColumnT) => (
                             <TaskColumn
+                                key={column.id}
+                                id={column.id}
                                 title={column.title}
                                 droppableId={column.title}
                                 tasks={column.tasks}
                                 createTaskFoo={createTask}
                                 openTaskInfoModal={openTaskInfoModal}
+                                editColumnTitle={editColumnTitle}
                             />
                         ))}
                     <CreateTaskColumn createColumn={createColumn} />

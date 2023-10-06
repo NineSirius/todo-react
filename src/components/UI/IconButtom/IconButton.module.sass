@@ -1,0 +1,28 @@
+.button
+  height: max-content
+  padding: 7px 10px
+  border-radius: 3px
+  border: unset
+  outline: unset
+  background: var(--primary)
+  color: var(--text-color)
+  font-weight: 600
+  transition: .2s
+  display: flex
+  justify-content: center
+  align-items: center
+
+  &:hover
+    cursor: pointer
+    background: var(--primary-hover)
+
+  &.default
+    background: #091E420F
+    color: #525252
+
+    &:hover
+      background: #d0d4db
+
+  &.error
+    background: var(--error-color)
+    color: #580000

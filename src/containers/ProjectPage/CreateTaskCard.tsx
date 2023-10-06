@@ -1,11 +1,17 @@
 import React, { useRef, useState, useEffect } from 'react'
 import styles from './ProjectPage.module.sass'
 import { Button } from 'components/UI/Button'
+import { MdClose } from 'react-icons/md'
+import { IconButton } from 'components/UI/IconButtom/IconButton'
 
 interface createTaskCardProps {
-    createTaskFoo: (column: string, title: string, description?: string) => void
+    createTaskFoo: (
+        column: { title: string; id: string },
+        title: string,
+        description?: string,
+    ) => void
     cancel: () => void
-    column: string
+    column: { title: string; id: string }
 }
 
 export const CreateTaskCard: React.FC<createTaskCardProps> = ({
@@ -35,7 +41,9 @@ export const CreateTaskCard: React.FC<createTaskCardProps> = ({
                 >
                     Добавить карточку
                 </Button>
-                <Button onClick={cancel}>X</Button>
+                <IconButton onClick={cancel}>
+                    <MdClose size={16} />
+                </IconButton>
             </div>
         </>
     )

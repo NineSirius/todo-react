@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styles from './ProjectPage.module.sass'
 import { Button } from 'components/UI/Button'
 import { MdClose } from 'react-icons/md'
+import { IconButton } from 'components/UI/IconButtom/IconButton'
 
 interface CreateTaskColumnProps {
     createColumn: (columnName: string) => void
@@ -24,9 +25,9 @@ export const CreateTaskColumn: React.FC<CreateTaskColumnProps> = ({ createColumn
                 />
                 <div className={styles.createTaskColumn_controls}>
                     <Button onClick={() => createColumn(taskColumnTitle)}>Добавить колонку</Button>
-                    <Button variant="default">
+                    <IconButton variant="default" onClick={toggle}>
                         <MdClose />
-                    </Button>
+                    </IconButton>
                 </div>
             </div>
         )
