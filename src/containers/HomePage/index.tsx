@@ -114,7 +114,7 @@ export const HomePage = () => {
     }
 
     return (
-        <div className={`container ${styles.home}`}>
+        <div className={`${styles.home}`}>
             <h1>Ваши проекты</h1>
 
             <div className={styles.projects}>
