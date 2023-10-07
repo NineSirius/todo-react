@@ -16,7 +16,7 @@ import { TaskColumnT } from 'types/TaskColumnT'
 import { CreateTaskColumn } from './CreateTaskColumn'
 import { v4 as uuidv4 } from 'uuid'
 import { MdOutlineArchive } from 'react-icons/md'
-import { enqueueSnackbar } from 'notistack'
+import { TaskCard } from './TaskCard'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -40,6 +40,7 @@ export const ProjectPage = () => {
     const [taskInfoDescEditable, setTaskInfoDescEditable] = useState<boolean>(false)
     const [archiveModal, setArchiveModal] = useState<boolean>(false)
     const [taskColumns, setTaskColumns] = useState<TaskColumnT[]>([])
+    const [taskArchive, setTaskArchive] = useState<TaskT[]>([])
 
     const inputRef = useRef<HTMLDivElement>(null)
     const { id } = useParams()
@@ -102,6 +103,7 @@ export const ProjectPage = () => {
                 } else {
                     setTaskColumns(initialColumnsState)
                 }
+                setTaskArchive(project.tasks.filter((task) => task.isArchived))
             }
         }
     }, [id])
@@ -480,25 +482,21 @@ export const ProjectPage = () => {
                 )}
             </Modal>
 
-            {/* <Modal show={archiveModal} onClose={() => setArchiveModal(false)}>
+            <Modal
+                title={<h3>Архив</h3>}
+                show={archiveModal}
+                onClose={() => setArchiveModal(false)}
+            >
                 <div className={styles.taskArchive}>
-                    <h3>Архив</h3>
-
                     <div className={styles.taskArchive_tasks}>
-                        {projectInfo &&
-                            projectInfo.tasks
-                                .filter((task) => task.isArchived)
-                                .map((task, index) => (
-                                    <TaskCard
-                                        title={task.title}
-                                        index={index}
-                                        id={task.id}
-                                        onClick={() => openTaskInfoModal(task.id)}
-                                    />
-                                ))}
+                        {taskArchive.map((task, index) => (
+                            <div className={styles.taskCard}>
+                                <p>{task.title}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
-            </Modal> */}
+            </Modal>
         </>
     )
 }

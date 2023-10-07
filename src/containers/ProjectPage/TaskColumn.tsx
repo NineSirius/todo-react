@@ -64,7 +64,12 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
             <Droppable droppableId={droppableId}>
                 {(provided) => (
                     <>
-                        <div className={styles.column}>
+                        <div
+                            className={styles.column}
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            id={droppableId}
+                        >
                             <div className={styles.columnTitle}>
                                 <input
                                     type="text"
@@ -90,17 +95,13 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                                     </MenuItem>
                                 </Menu>
                             </div>
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                id={droppableId}
-                                className={styles.column_tasks}
-                            >
+                            <div className={styles.column_tasks}>
                                 {tasks.map((task, index) => {
                                     if (!task.isArchived) {
                                         return (
                                             <TaskCard
                                                 title={task.title}
+                                                description={task.description}
                                                 id={task.id}
                                                 index={index}
                                                 key={task.id}
