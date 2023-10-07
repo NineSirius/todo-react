@@ -13,8 +13,6 @@ interface TaskCardProps {
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({ title, description, id, index, onClick }) => {
-    console.log(description)
-
     return (
         <>
             <Draggable draggableId={id} index={index}>

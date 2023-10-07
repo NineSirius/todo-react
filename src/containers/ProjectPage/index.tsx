@@ -17,6 +17,8 @@ import { CreateTaskColumn } from './CreateTaskColumn'
 import { v4 as uuidv4 } from 'uuid'
 import { MdOutlineArchive } from 'react-icons/md'
 import { TaskCard } from './TaskCard'
+import { usePrompt } from 'containers/PromptProvider'
+import { enqueueSnackbar } from 'notistack'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -42,6 +44,7 @@ export const ProjectPage = () => {
     const [taskColumns, setTaskColumns] = useState<TaskColumnT[]>([])
     const [taskArchive, setTaskArchive] = useState<TaskT[]>([])
 
+    const { openPrompt } = usePrompt()
     const inputRef = useRef<HTMLDivElement>(null)
     const { id } = useParams()
 
@@ -225,7 +228,7 @@ export const ProjectPage = () => {
     ) => {
         if (projectInfo) {
             const newTask: TaskT = {
-                id: Date.now().toString(),
+                id: uuidv4(),
                 title: title,
                 description: description ? description : '',
                 column: {
@@ -306,12 +309,19 @@ export const ProjectPage = () => {
         if (projectInfo) {
             const projectInfoCopy = { ...projectInfo }
             const deleteTaskIndex = projectInfoCopy.tasks.findIndex((task) => task.id === taskId)
-            if (deleteTaskIndex) {
-                projectInfo?.tasks.splice(deleteTaskIndex, 1)
+            console.log(deleteTaskIndex)
+
+            if (deleteTaskIndex >= 0) {
+                console.log('' + projectInfo.tasks[deleteTaskIndex].id + ' = ' + taskId)
+                projectInfoCopy.tasks.splice(deleteTaskIndex, 1)
+
+                setProjectInfo(projectInfoCopy)
+                saveProjectInfo()
+                setTaskInfoModal(false)
+                renderTasksFromProject(projectInfoCopy)
+            } else {
+                enqueueSnackbar('Не удалось удалить задачу', { variant: 'error' })
             }
-            saveProjectInfo()
-            setTaskInfoModal(false)
-            renderTasksFromProject(projectInfo)
         }
     }
 
@@ -492,7 +502,19 @@ export const ProjectPage = () => {
                                             </Button>
                                         </>
                                     )}
-                                    <Button onClick={() => deleteTask(taskInfo.id)} variant="error">
+                                    <Button
+                                        onClick={() => {
+                                            setTaskInfoModal(false)
+                                            openPrompt(
+                                                'Удаление задачи',
+                                                'Вы действительно хотите удалить задачу? После удаления вся информация с ней связанная исчезнет без возможности возврата. После подтверждения, отмена невозможна',
+                                                () => {
+                                                    deleteTask(taskInfo.id)
+                                                },
+                                            )
+                                        }}
+                                        variant="error"
+                                    >
                                         Удалить
                                     </Button>
                                 </div>
@@ -526,7 +548,24 @@ export const ProjectPage = () => {
                                         >
                                             Вернуть
                                         </button>
-                                        <button onClick={() => deleteTask(task.id)}>Удалить</button>
+                                        <button
+                                            onClick={() =>
+                                                openPrompt(
+                                                    'Удаление задачи',
+                                                    'Вы действительно хотите удалить задачу? После удаления вся информация с ней связанная исчезнет без возможности возврата. После подтверждения, отмена невозможна',
+                                                    () => {
+                                                        deleteTask(task.id)
+                                                        setTaskArchive((prev: TaskT[]) => {
+                                                            const taskArchiveCopy = [...prev]
+                                                            taskArchiveCopy.splice(index, 1)
+                                                            return taskArchiveCopy
+                                                        })
+                                                    },
+                                                )
+                                            }
+                                        >
+                                            Удалить
+                                        </button>
                                     </div>
                                 </div>
                             ))

@@ -118,7 +118,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                                     <CreateTaskCard
                                         createTaskFoo={createTaskFoo}
                                         cancel={() => setCreateTaskModal(false)}
-                                        column={{ id: id, title: droppableId }}
+                                        column={{ id, title }}
                                     />
                                 ) : (
                                     <button

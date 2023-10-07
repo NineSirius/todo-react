@@ -4,6 +4,7 @@ import styles from './HomePage.module.sass'
 import { ProjectCard } from '../../components/ProjectCard'
 import { useNavigate } from 'react-router-dom'
 import { Modal } from 'components/UI/Modal'
+import { usePrompt } from 'containers/PromptProvider'
 
 export const HomePage = () => {
     const [projects, setProjects] = useState<ProjectT[] | null>(null)
@@ -14,6 +15,8 @@ export const HomePage = () => {
     const [deleteProjectIndex, setDeleteProjectIndex] = useState<number>(0)
     const [projectName, setProjectName] = useState<string>('')
     const [projectColor, setProjectColor] = useState<string>('#999')
+
+    const { openPrompt } = usePrompt()
 
     useEffect(() => {
         const projects = localStorage.getItem('projects')
@@ -131,7 +134,11 @@ export const HomePage = () => {
                             deleteProject={(e) => {
                                 e.stopPropagation()
                                 setDeleteProjectIndex(index)
-                                setDeleteConfirmModal(true)
+                                openPrompt(
+                                    'Удаление проекта',
+                                    'Вы действительно хотите удалить проект? Удаляя проект вы также потеряете все данные с ним связанные в том числе и задачи. После подтверждения отмена невозможна',
+                                    () => deleteProject(index),
+                                )
                             }}
                             //@ts-ignore
                             editProject={(e) => {
@@ -210,36 +217,6 @@ export const HomePage = () => {
                     </label>
                     <button type="submit">Изменить</button>
                 </form>
-            </Modal>
-
-            <Modal
-                show={deleteConfirmModal}
-                onClose={() => setDeleteConfirmModal(false)}
-                title={<h4>Удаление проекта</h4>}
-            >
-                <div className={styles.delete_wrap}>
-                    <p>Вы действительно хотите удалить этот проект</p>
-
-                    {projects && projects[deleteProjectIndex] && (
-                        <ProjectCard
-                            columns={projects[deleteProjectIndex].columns}
-                            title={projects[deleteProjectIndex].title}
-                            id={projects[deleteProjectIndex].id}
-                            tasks={projects[deleteProjectIndex].tasks}
-                            createdAt={projects[deleteProjectIndex].createdAt}
-                            bg={projects[deleteProjectIndex].bg}
-                        />
-                    )}
-                    <p>Этот проект удалится навсегда, без возможности возврата. </p>
-                    <p>
-                        <strong>Отмена невозможна</strong>
-                    </p>
-
-                    <div className={styles.buttons}>
-                        <button onClick={() => setDeleteConfirmModal(false)}>Отменить</button>
-                        <button onClick={() => deleteProject(deleteProjectIndex)}>Да</button>
-                    </div>
-                </div>
             </Modal>
         </div>
     )
