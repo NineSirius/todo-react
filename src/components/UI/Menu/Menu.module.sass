@@ -13,7 +13,6 @@
     width: max-content
     position: absolute
     top: 160%
-    left: 0
     visibility: hidden
     opacity: 0
     background: #fff
@@ -26,6 +25,12 @@
     transition: .2s
     border: 1px solid var(--border-color)
     box-shadow: var(--menu-shadow)
+
+    &.right
+      right: 0
+
+    &.left
+      left: 0
 
     &.active
       top: 130%

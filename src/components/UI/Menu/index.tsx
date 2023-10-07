@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import { useState, useRef, useEffect } from 'react'
 import styles from './Menu.module.sass'
 
@@ -9,13 +10,25 @@ type MenuProps = {
 
 export const Menu: React.FC<MenuProps> = ({ title, children }): JSX.Element => {
     const [show, setShow] = useState<boolean>(false)
+    const [menuId, setMenuId] = useState<string | null>(null)
+    const [clientWidth, setClientWidth] = useState<number>(0)
+    const [left, setLeft] = useState<number>(0)
+    const [right, setRight] = useState<number>(0)
 
-    const menuRef = useRef<HTMLDivElement>(null)
+    const menuRef = useRef<any>(null)
+    const menuContentRef = useRef<any>(null)
 
-    const handleClickOutside = (event: MouseEvent) => {
-        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    const handleClickOutside = useCallback((event: MouseEvent) => {
+        if (menuId && menuRef.current.id !== menuId) {
+            console.log(menuRef.current.id)
+
             setShow(false)
         }
+    }, [])
+
+    const toggleShow = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.stopPropagation()
+        setShow(!show)
     }
 
     useEffect(() => {
@@ -26,19 +39,52 @@ export const Menu: React.FC<MenuProps> = ({ title, children }): JSX.Element => {
         }
     }, [])
 
-    const toggleShow = (event: React.MouseEvent<HTMLDivElement>) => {
-        event.stopPropagation()
-        setShow(!show)
-    }
+    useEffect(() => {
+        setMenuId(() => uuidv4())
+    }, [])
 
-    return (
-        <div className={styles.menu} ref={menuRef}>
-            <div className={styles.menu_title} onClick={toggleShow}>
-                {title}
+    useEffect(() => {
+        if (menuContentRef.current) {
+            setClientWidth(menuContentRef.current.clientWidth)
+        }
+    }, [menuContentRef])
+
+    useEffect(() => {
+        if (menuId) {
+            const element = document.getElementById(menuId)
+
+            if (element && show) {
+                const rect = element.getBoundingClientRect()
+                const windowWidth = window.innerWidth
+                const distanceToLeft = rect.left
+                const distanceToRight = windowWidth - rect.right
+                setLeft(distanceToLeft)
+                setRight(distanceToRight)
+            }
+        }
+    }, [menuId, show])
+
+    if (menuId) {
+        return (
+            <div className={styles.menu} ref={menuRef} id={menuId}>
+                <div className={styles.menu_title} onClick={toggleShow}>
+                    {title}
+                </div>
+                <div
+                    className={`${styles.menu_content} ${show && styles.active} ${
+                        right < clientWidth ? styles.right : styles.left
+                    }`}
+                    ref={menuContentRef}
+                    // @ts-ignore
+                >
+                    {children}
+                </div>
             </div>
-            <div className={`${styles.menu_content} ${show && styles.active}`}>{children}</div>
-        </div>
-    )
+        )
+    } else {
+        // eslint-disable-next-line jsx-a11y/heading-has-content
+        return <h4></h4>
+    }
 }
 
 type MenuItemProps = {
