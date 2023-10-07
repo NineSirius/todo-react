@@ -19,9 +19,7 @@ export const Menu: React.FC<MenuProps> = ({ title, children }): JSX.Element => {
     const menuContentRef = useRef<any>(null)
 
     const handleClickOutside = useCallback((event: MouseEvent) => {
-        if (menuId && menuRef.current.id !== menuId) {
-            console.log(menuRef.current.id)
-
+        if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
             setShow(false)
         }
     }, [])
