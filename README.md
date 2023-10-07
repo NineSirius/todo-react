@@ -1,46 +1,70 @@
-# Getting Started with Create React App
+# ToDo React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+ToDo - это простой и удобный онлайн-инструмент для управления задачами и проектами, разработанный для повышения вашей продуктивности и организации рабочего процесса. С ToDo вы можете создавать задачи, устанавливать сроки, назначать ответственных и отслеживать ход выполнения задач.
 
-## Available Scripts
+## Особенности
 
-In the project directory, you can run:
+- Создание задач и карточек для организации задач по проектам.
+- Установка сроков и приоритетов для задач.
+- Перемещение задач между списками для удобного управления процессом.
+- Комментирование и обсуждение задач внутри карточек.
+- Прикрепление файлов и важных документов к задачам.
 
-### `npm start`
+## Установка и запуск
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Для запуска ToDo App на вашем компьютере, выполните следующие шаги:
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+1. Клонируйте репозиторий:
+```
+git clone https://github.com/NineSirius/todo-react.git
+```
+2. Установите зависимости
+```
+cd todo-react
+npm install
+# or
+yarn 
+```
+3. Запустите проект
+```
+npm run dev
+# or
+yarn dev
+```
+4. Откройте веб-браузер и перейдите по адресу `http://localhost:3000` для доступа к ToDo React.
 
-### `npm test`
+## Использование
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+После установки и запуска ToDo, вы можете создавать проекты и задачи, управлять списками задач Приложение предоставляет интуитивно понятный интерфейс, который легко использовать для организации ваших проектов и задач.
 
-### `npm run build`
+### Создание проекта
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Нажмите на блок "Создать проект".
+2. Заполните информацию о проекте, такую как заголовок и цвет карточки.
+3. Нажмите "Создать" для создания задачи.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Создание задач
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Перейдите в любой проект.
+2. Под нужной вам колонкой нажмите на кнопку "Создать задачу".
+3. Заполните поле и нажмите на "Добавить карточку".
+4. Готово! Задача была создана. Чтобы узнать о ней подробнее, просто нажмите на неё. Также вы можете перекидывать задачи в другие колонки, просто зажав и перетащив их в нужную вам колонку
 
-### `npm run eject`
+### Управление задачами
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+- Перемещайте задачи между списками для изменения статуса.
+- Нажмите на задачу, чтобы просмотреть подробности.
+- Отмечайте задачи как выполненные, когда они завершены.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Вклад
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Если вы хотите внести свой вклад в развитие ToDo, вы можете сделать это, создавая запросы на слияние [(pull requests)](https://github.com/NineSirius/todo-react/pulls) и сообщая об ошибках [(issues)](https://github.com/NineSirius/todo-react/issues)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Лицензия
 
-## Learn More
+ToDo распространяется под лицензией MIT. Подробности смотрите в файле LICENSE.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Связь
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Если у вас есть какие-либо вопросы или предложения по улучшению ToDo React, пожалуйста, свяжитесь со мной - https://t.me/NineSirius
+Я надеюсь, что ToDo App поможет вам более эффективно управлять вашими задачами и проектами. Спасибо что пользуютесь моим проектом )
