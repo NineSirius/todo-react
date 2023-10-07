@@ -8,7 +8,7 @@
   border: unset
   outline: unset
   background: var(--primary)
-  color: var(--text-color)
+  color: var(--light)
   font-weight: 600
   transition: .2s
 
@@ -24,5 +24,8 @@
       background: #d0d4db
 
   &.error
-    background: var(--error-color)
-    color: #580000
+    background: var(--error)
+    color: var(--light)
+
+    &:hover
+      background: var(--error-hover)

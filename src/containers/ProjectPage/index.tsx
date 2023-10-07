@@ -115,11 +115,10 @@ export const ProjectPage = () => {
 
         const { source, destination } = result
         const movedTask = projectInfo?.tasks.find((task) => task.id === result.draggableId)
+        const destinationColumnId = null
 
         if (source.droppableId === destination.droppableId && movedTask) {
-            const sourceColumn = taskColumns.filter(
-                (column) => column.title === source.droppableId,
-            )[0]
+            const sourceColumn = taskColumns.filter((column) => column.id === source.droppableId)[0]
             console.log(sourceColumn)
 
             if (sourceColumn) {
@@ -137,14 +136,20 @@ export const ProjectPage = () => {
                 return taskColumnsCopy
             })
         } else if (movedTask) {
-            movedTask.column = destination.droppableId
-            movedTask.position = destination.index
+            const destinationColumn = taskColumns.find(
+                (column) => column.id === destination.droppableId,
+            )
+
+            if (destinationColumn) {
+                movedTask.column = { id: destination.droppableId, title: destinationColumn?.title }
+                movedTask.position = destination.index
+            }
 
             const sourceColumnTasks = taskColumns.filter(
-                (column) => column.title === source.droppableId,
+                (column) => column.id === source.droppableId,
             )[0]
             const destinationColumnTasks = taskColumns.filter(
-                (column) => column.title === destination.droppableId,
+                (column) => column.id === destination.droppableId,
             )[0]
 
             const updatedSourceTasks = [...sourceColumnTasks.tasks]
@@ -245,7 +250,7 @@ export const ProjectPage = () => {
 
             setTaskColumns((prev: TaskColumnT[]) => {
                 const taskColumnsCopy = [...prev]
-                const index = taskColumnsCopy.findIndex((col) => col.title === column.title)
+                const index = taskColumnsCopy.findIndex((col) => col.id === column.id)
                 taskColumnsCopy[index].tasks.push(newTask)
                 return taskColumnsCopy
             })
@@ -254,12 +259,15 @@ export const ProjectPage = () => {
         }
     }
 
-    const changeTaskInfo = (property: string, value: any) => {
-        if (taskInfo) {
-            const taskInfoCopy = { ...taskInfo }
+    const changeTaskInfo = (property: string, value: any, taskId: any) => {
+        if (projectInfo) {
+            const projectInfoCopy = { ...projectInfo }
+            const taskIndex = projectInfoCopy.tasks.findIndex((task) => task.id === taskId)
             //@ts-ignore
-            taskInfoCopy[property] = value
-            setTaskInfo(taskInfoCopy)
+            projectInfo.tasks[taskIndex][property] = value
+            setProjectInfo(projectInfoCopy)
+            renderTasksFromProject(projectInfo)
+            saveProjectInfo()
         }
     }
 
@@ -331,7 +339,7 @@ export const ProjectPage = () => {
                                 key={column.id}
                                 id={column.id}
                                 title={column.title}
-                                droppableId={column.title}
+                                droppableId={column.id}
                                 tasks={column.tasks}
                                 createTaskFoo={createTask}
                                 openTaskInfoModal={openTaskInfoModal}
@@ -370,7 +378,7 @@ export const ProjectPage = () => {
                                 className={styles.taskInfo_title}
                                 value={taskInfo.title}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                    changeTaskInfo('title', e.target.value)
+                                    changeTaskInfo('title', e.target.value, taskInfo.id)
                                 }
                             />
                         </div>
@@ -426,7 +434,11 @@ export const ProjectPage = () => {
                                             <div className={styles.editor_controls}>
                                                 <Button
                                                     onClick={() => {
-                                                        changeTaskInfo('description', taskInfoDesc)
+                                                        changeTaskInfo(
+                                                            'description',
+                                                            taskInfoDesc,
+                                                            taskInfo.id,
+                                                        )
                                                         setTaskInfoDescEditable(false)
                                                     }}
                                                 >
@@ -458,7 +470,13 @@ export const ProjectPage = () => {
                                     <h4>Действия</h4>
                                     {!taskInfo.isArchived ? (
                                         <Button
-                                            onClick={() => changeTaskInfo('isArchived', true)}
+                                            onClick={() => {
+                                                changeTaskInfo('isArchived', true, taskInfo.id)
+                                                setTaskArchive((prev) => [
+                                                    ...prev,
+                                                    { ...taskInfo, isArchived: true },
+                                                ])
+                                            }}
                                             variant="default"
                                         >
                                             Архивировать
@@ -466,7 +484,9 @@ export const ProjectPage = () => {
                                     ) : (
                                         <>
                                             <Button
-                                                onClick={() => changeTaskInfo('isArchived', false)}
+                                                onClick={() =>
+                                                    changeTaskInfo('isArchived', false, taskInfo.id)
+                                                }
                                             >
                                                 Вернуть
                                             </Button>
@@ -489,11 +509,30 @@ export const ProjectPage = () => {
             >
                 <div className={styles.taskArchive}>
                     <div className={styles.taskArchive_tasks}>
-                        {taskArchive.map((task, index) => (
-                            <div className={styles.taskCard}>
-                                <p>{task.title}</p>
-                            </div>
-                        ))}
+                        {taskArchive.length > 0 ? (
+                            taskArchive.map((task, index) => (
+                                <div className={styles.taskCard}>
+                                    <p>{task.title}</p>
+                                    <div className={styles.taskCard_archiveTaskControls}>
+                                        <button
+                                            onClick={() => {
+                                                changeTaskInfo('isArchived', false, task.id)
+                                                setTaskArchive((prev: TaskT[]) => {
+                                                    const taskArchiveCopy = [...prev]
+                                                    taskArchiveCopy.splice(index, 1)
+                                                    return taskArchiveCopy
+                                                })
+                                            }}
+                                        >
+                                            Вернуть
+                                        </button>
+                                        <button onClick={() => deleteTask(task.id)}>Удалить</button>
+                                    </div>
+                                </div>
+                            ))
+                        ) : (
+                            <h4 className={styles.taskArchive_empty}>Архив пуст</h4>
+                        )}
                     </div>
                 </div>
             </Modal>
