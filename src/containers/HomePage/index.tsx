@@ -115,7 +115,11 @@ export const HomePage = () => {
 
     return (
         <div className={`${styles.home}`}>
-            <h1>Ваши проекты</h1>
+            <header className={styles.home_header}>
+                <h1>ToDo App</h1>
+                <p>Как Trello, только хуже</p>
+            </header>
+            <h2>Ваши проекты</h2>
 
             <div className={styles.projects}>
                 {projects &&
