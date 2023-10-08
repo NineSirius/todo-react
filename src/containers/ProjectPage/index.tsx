@@ -595,8 +595,7 @@ export const ProjectPage = () => {
                         <input
                             value={projectInfo.title}
                             placeholder="Введите заголовк проекта"
-                className={styles.input}
-                onBlur={() => }
+                            className={styles.input}
                         />
                     </div>
                 )}
