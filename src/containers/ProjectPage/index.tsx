@@ -15,10 +15,11 @@ import rehypeRaw from 'rehype-raw'
 import { TaskColumnT } from 'types/TaskColumnT'
 import { CreateTaskColumn } from './CreateTaskColumn'
 import { v4 as uuidv4 } from 'uuid'
-import { MdOutlineArchive } from 'react-icons/md'
-import { TaskCard } from './TaskCard'
+import { MdMoreHoriz, MdOutlineArchive } from 'react-icons/md'
 import { usePrompt } from 'containers/PromptProvider'
 import { enqueueSnackbar } from 'notistack'
+import { IconButton } from 'components/UI/IconButtom/IconButton'
+import { Menu, MenuItem } from 'components/UI/Menu'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -33,9 +34,6 @@ const sortTasksByPosition = (tasks: TaskT[]) => {
 
 export const ProjectPage = () => {
     const [projectInfo, setProjectInfo] = useState<ProjectT | null>(null)
-    const [queue, setQueue] = useState<TaskT[]>([])
-    const [done, setDone] = useState<TaskT[]>([])
-    const [development, setDevelopment] = useState<TaskT[]>([])
     const [taskInfoModal, setTaskInfoModal] = useState<boolean>(false)
     const [taskInfo, setTaskInfo] = useState<TaskT | null>(null)
     const [taskInfoDesc, setTaskInfoDesc] = useState<string>('')
@@ -43,6 +41,7 @@ export const ProjectPage = () => {
     const [archiveModal, setArchiveModal] = useState<boolean>(false)
     const [taskColumns, setTaskColumns] = useState<TaskColumnT[]>([])
     const [taskArchive, setTaskArchive] = useState<TaskT[]>([])
+    const [aboutProjectModal, setAboutProjectModal] = useState<boolean>(false)
 
     const { openPrompt } = usePrompt()
     const inputRef = useRef<HTMLDivElement>(null)
@@ -340,6 +339,16 @@ export const ProjectPage = () => {
                 <Button onClick={() => setArchiveModal(true)} variant="default">
                     <MdOutlineArchive size={16} /> Архив
                 </Button>
+                <Menu
+                    title={
+                        <IconButton variant="default">
+                            <MdMoreHoriz />
+                        </IconButton>
+                    }
+                >
+                    <MenuItem onClick={() => setAboutProjectModal(true)}>О проекте</MenuItem>
+                    <MenuItem onClick={() => enqueueSnackbar('Скоро')}>Экспорт</MenuItem>
+                </Menu>
             </div>
             <div className={styles.board}>
                 <DragDropContext onDragEnd={handleDragEnd}>
@@ -574,6 +583,23 @@ export const ProjectPage = () => {
                         )}
                     </div>
                 </div>
+            </Modal>
+
+            <Modal
+                show={aboutProjectModal}
+                onClose={() => setAboutProjectModal(false)}
+                title={<h4>О проекте</h4>}
+            >
+                {projectInfo && (
+                    <div className={styles.aboutProject}>
+                        <input
+                            value={projectInfo.title}
+                            placeholder="Введите заголовк проекта"
+                className={styles.input}
+                onBlur={() => }
+                        />
+                    </div>
+                )}
             </Modal>
         </>
     )
