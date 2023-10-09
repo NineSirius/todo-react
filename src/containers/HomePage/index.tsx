@@ -4,6 +4,7 @@ import styles from './HomePage.module.sass'
 import { ProjectCard } from '../../components/ProjectCard'
 import { useNavigate } from 'react-router-dom'
 import { Modal } from 'components/UI/Modal'
+import { Helmet } from 'react-helmet'
 import { usePrompt } from 'containers/PromptProvider'
 
 export const HomePage = () => {
@@ -114,114 +115,119 @@ export const HomePage = () => {
     }
 
     return (
-        <div className={`${styles.home}`}>
-            <header className={styles.home_header}>
-                <h1>ToDo App</h1>
-                <p>Как Trello, только хуже</p>
-            </header>
-            <h2>Ваши проекты</h2>
+        <>
+            <Helmet>
+                <title>ToDo React - Создавайте и управляйте задачи</title>
+            </Helmet>
+            <div className={`${styles.home}`}>
+                <header className={styles.home_header}>
+                    <h1>ToDo App</h1>
+                    <p>Как Trello, только хуже</p>
+                </header>
+                <h2>Ваши проекты</h2>
 
-            <div className={styles.projects}>
-                {projects &&
-                    projects.map((item, index) => (
-                        <ProjectCard
-                            key={item.id}
-                            title={item.title}
-                            id={item.id}
-                            tasks={item.tasks}
-                            createdAt={item.createdAt}
-                            onClick={(event: React.MouseEvent<HTMLDivElement>) => {
-                                navigate(`/projects/${item.id}`)
-                            }}
-                            bg={item.bg}
-                            // @ts-ignore
-                            deleteProject={(e) => {
-                                e.stopPropagation()
-                                setDeleteProjectIndex(index)
-                                openPrompt(
-                                    'Удаление проекта',
-                                    'Вы действительно хотите удалить проект? Удаляя проект вы также потеряете все данные с ним связанные в том числе и задачи. После подтверждения отмена невозможна',
-                                    () => deleteProject(index),
-                                )
-                            }}
-                            //@ts-ignore
-                            editProject={(e) => {
-                                e.stopPropagation()
-                                setProjectId(item.id)
-                                setProjectName(item.title)
-                                setProjectColor(item.bg.color)
-                                setEditProjectModal(true)
-                            }}
-                        />
-                    ))}
-                <div className={styles.card} onClick={() => setNewProjectModal(true)}>
-                    Создать проект
+                <div className={styles.projects}>
+                    {projects &&
+                        projects.map((item, index) => (
+                            <ProjectCard
+                                key={item.id}
+                                title={item.title}
+                                id={item.id}
+                                tasks={item.tasks}
+                                createdAt={item.createdAt}
+                                onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+                                    navigate(`/projects/${item.id}`)
+                                }}
+                                bg={item.bg}
+                                // @ts-ignore
+                                deleteProject={(e) => {
+                                    e.stopPropagation()
+                                    setDeleteProjectIndex(index)
+                                    openPrompt(
+                                        'Удаление проекта',
+                                        'Вы действительно хотите удалить проект? Удаляя проект вы также потеряете все данные с ним связанные в том числе и задачи. После подтверждения отмена невозможна',
+                                        () => deleteProject(index),
+                                    )
+                                }}
+                                //@ts-ignore
+                                editProject={(e) => {
+                                    e.stopPropagation()
+                                    setProjectId(item.id)
+                                    setProjectName(item.title)
+                                    setProjectColor(item.bg.color)
+                                    setEditProjectModal(true)
+                                }}
+                            />
+                        ))}
+                    <div className={styles.card} onClick={() => setNewProjectModal(true)}>
+                        Создать проект
+                    </div>
                 </div>
+
+                <Modal
+                    show={newProjectModal}
+                    title={<h4>Создание проекта</h4>}
+                    onClose={() => {
+                        setNewProjectModal(false)
+                        setProjectColor('#999')
+                        setProjectName('')
+                    }}
+                >
+                    <form onSubmit={newProjectSubmit} className={styles.form}>
+                        <label>
+                            <span>Название проекта*</span>
+                            <input
+                                type="text"
+                                value={projectName}
+                                required
+                                onChange={projectNameChange}
+                            />
+                        </label>
+                        <label>
+                            <span>Выберите цвет*</span>
+                            <input
+                                type="color"
+                                value={projectColor}
+                                required
+                                onChange={projectColorChange}
+                            />
+                        </label>
+                        <button type="submit">Создать</button>
+                    </form>
+                </Modal>
+
+                <Modal
+                    show={editProjectModal}
+                    title={<h4>Изменение проекта</h4>}
+                    onClose={() => {
+                        setProjectColor('#999')
+                        setProjectName('')
+                        setEditProjectModal(false)
+                    }}
+                >
+                    <form onSubmit={editProjectSubmit} className={styles.form}>
+                        <label>
+                            <span>Название проекта*</span>
+                            <input
+                                type="text"
+                                value={projectName}
+                                required
+                                onChange={projectNameChange}
+                            />
+                        </label>
+                        <label>
+                            <span>Выберите цвет*</span>
+                            <input
+                                type="color"
+                                value={projectColor}
+                                required
+                                onChange={projectColorChange}
+                            />
+                        </label>
+                        <button type="submit">Изменить</button>
+                    </form>
+                </Modal>
             </div>
-
-            <Modal
-                show={newProjectModal}
-                title={<h4>Создание проекта</h4>}
-                onClose={() => {
-                    setNewProjectModal(false)
-                    setProjectColor('#999')
-                    setProjectName('')
-                }}
-            >
-                <form onSubmit={newProjectSubmit} className={styles.form}>
-                    <label>
-                        <span>Название проекта*</span>
-                        <input
-                            type="text"
-                            value={projectName}
-                            required
-                            onChange={projectNameChange}
-                        />
-                    </label>
-                    <label>
-                        <span>Выберите цвет*</span>
-                        <input
-                            type="color"
-                            value={projectColor}
-                            required
-                            onChange={projectColorChange}
-                        />
-                    </label>
-                    <button type="submit">Создать</button>
-                </form>
-            </Modal>
-
-            <Modal
-                show={editProjectModal}
-                title={<h4>Изменение проекта</h4>}
-                onClose={() => {
-                    setProjectColor('#999')
-                    setProjectName('')
-                    setEditProjectModal(false)
-                }}
-            >
-                <form onSubmit={editProjectSubmit} className={styles.form}>
-                    <label>
-                        <span>Название проекта*</span>
-                        <input
-                            type="text"
-                            value={projectName}
-                            required
-                            onChange={projectNameChange}
-                        />
-                    </label>
-                    <label>
-                        <span>Выберите цвет*</span>
-                        <input
-                            type="color"
-                            value={projectColor}
-                            required
-                            onChange={projectColorChange}
-                        />
-                    </label>
-                    <button type="submit">Изменить</button>
-                </form>
-            </Modal>
-        </div>
+        </>
     )
 }

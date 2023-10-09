@@ -10,6 +10,7 @@ import { Menu, MenuItem } from 'components/UI/Menu'
 import { MdMoreHoriz } from 'react-icons/md'
 import { IconButton } from 'components/UI/IconButtom/IconButton'
 import { enqueueSnackbar } from 'notistack'
+import { usePrompt } from 'containers/PromptProvider'
 
 interface TaskColumnProps {
     id: string
@@ -23,6 +24,7 @@ interface TaskColumnProps {
     ) => void
     openTaskInfoModal: (id: string) => void
     editColumnTitle: (columnTitle: string, columnId: string) => void
+    deleteColumn: (columnId: string) => void
 }
 
 export const TaskColumn: React.FC<TaskColumnProps> = ({
@@ -33,10 +35,13 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     createTaskFoo,
     openTaskInfoModal,
     editColumnTitle,
+    deleteColumn,
 }): JSX.Element => {
     const [createTaskModal, setCreateTaskModal] = useState(false)
     const [columnTitle, setColumnTitle] = useState<string>(title)
     const [tasksLength, setTaskLength] = useState<number>(0)
+
+    const { openPrompt } = usePrompt()
 
     const createTaskRef = useRef<any>(null)
 
@@ -89,7 +94,13 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                                     }
                                 >
                                     <MenuItem
-                                        onClick={() => enqueueSnackbar('Пока что не доступно')}
+                                        onClick={() =>
+                                            openPrompt(
+                                                'Удаление колнки',
+                                                'Удаляя колонку, вы также удалите всю информация с ней связаную, в том числе и задачи. Отмена невозможна',
+                                                () => deleteColumn(id),
+                                            )
+                                        }
                                     >
                                         Удалить колонку
                                     </MenuItem>

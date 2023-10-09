@@ -20,6 +20,7 @@ import { usePrompt } from 'containers/PromptProvider'
 import { enqueueSnackbar } from 'notistack'
 import { IconButton } from 'components/UI/IconButtom/IconButton'
 import { Menu, MenuItem } from 'components/UI/Menu'
+import { Helmet } from 'react-helmet'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
     const result = Array.from(list)
@@ -324,8 +325,40 @@ export const ProjectPage = () => {
         }
     }
 
+    const deleteColumn = (columnId: string) => {
+        if (projectInfo) {
+            setTaskColumns((prev) => {
+                const taskColumnsCopy = [...prev]
+                const targetColumnIndex = taskColumnsCopy.findIndex(
+                    (column) => column.id === columnId,
+                )
+                taskColumnsCopy.splice(targetColumnIndex, 1)
+
+                return taskColumnsCopy
+            })
+
+            setProjectInfo((prev: any) => {
+                const projectInfoCopy = { ...prev }
+                const targetColumnIndex = projectInfoCopy.columns.findIndex(
+                    (column: TaskColumnT) => column.id === columnId,
+                )
+                projectInfoCopy.tasks = projectInfoCopy.tasks.filter(
+                    (task: TaskT) => task.column.id !== columnId,
+                )
+                projectInfoCopy.splice(targetColumnIndex, 1)
+                return projectInfoCopy
+            })
+
+            renderTasksFromProject(projectInfo)
+            saveProjectInfo()
+        }
+    }
+
     return (
         <>
+            <Helmet>
+                <title>{`${projectInfo?.title} - ToDo`}</title>
+            </Helmet>
             <div className={styles.projectTitle}>
                 <div
                     ref={inputRef}
@@ -363,6 +396,7 @@ export const ProjectPage = () => {
                                 createTaskFoo={createTask}
                                 openTaskInfoModal={openTaskInfoModal}
                                 editColumnTitle={editColumnTitle}
+                                deleteColumn={deleteColumn}
                             />
                         ))}
                     <CreateTaskColumn createColumn={createColumn} />
