@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Droppable } from 'react-beautiful-dnd'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
 import { TaskT } from 'types/TaskT'
 import { TaskCard } from './TaskCard'
 import styles from './ProjectPage.module.sass'
@@ -25,6 +25,7 @@ interface TaskColumnProps {
     openTaskInfoModal: (id: string) => void
     editColumnTitle: (columnTitle: string, columnId: string) => void
     deleteColumn: (columnId: string) => void
+    index: number
 }
 
 export const TaskColumn: React.FC<TaskColumnProps> = ({
@@ -36,6 +37,7 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
     openTaskInfoModal,
     editColumnTitle,
     deleteColumn,
+    index,
 }): JSX.Element => {
     const [createTaskModal, setCreateTaskModal] = useState(false)
     const [columnTitle, setColumnTitle] = useState<string>(title)
@@ -66,84 +68,98 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
 
     return (
         <>
-            <Droppable droppableId={droppableId}>
+            <Draggable draggableId={`${droppableId}-draggable`} index={index}>
                 {(provided) => (
-                    <>
-                        <div
-                            className={styles.column}
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                            id={droppableId}
-                        >
-                            <div className={styles.columnTitle}>
-                                <input
-                                    type="text"
-                                    className={styles.input}
-                                    value={columnTitle}
-                                    placeholder="Введите заголовок колонки"
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                                        setColumnTitle(e.target.value)
-                                    }
-                                    onBlur={() => editColumnTitle(columnTitle, id)}
-                                />
-                                <Menu
-                                    title={
-                                        <IconButton variant="default">
-                                            <MdMoreHoriz size={18} />
-                                        </IconButton>
-                                    }
-                                >
-                                    <MenuItem
-                                        onClick={() =>
-                                            openPrompt(
-                                                'Удаление колнки',
-                                                'Удаляя колонку, вы также удалите всю информация с ней связаную, в том числе и задачи. Отмена невозможна',
-                                                () => deleteColumn(id),
-                                            )
-                                        }
+                    <div
+                        className={styles.column}
+                        ref={provided.innerRef}
+                        {...provided.dragHandleProps}
+                        {...provided.draggableProps}
+                    >
+                        <Droppable droppableId={droppableId} ignoreContainerClipping={true}>
+                            {(provided) => (
+                                <>
+                                    <div
+                                        className={styles.column_content}
+                                        {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                        id={droppableId}
                                     >
-                                        Удалить колонку
-                                    </MenuItem>
-                                </Menu>
-                            </div>
-                            <div className={styles.column_tasks}>
-                                {tasks.map((task, index) => {
-                                    if (!task.isArchived) {
-                                        return (
-                                            <TaskCard
-                                                title={task.title}
-                                                description={task.description}
-                                                id={task.id}
-                                                index={index}
-                                                key={task.id}
-                                                onClick={openTaskInfoModal}
+                                        <div className={styles.columnTitle}>
+                                            <input
+                                                type="text"
+                                                className={styles.input}
+                                                value={columnTitle}
+                                                placeholder="Введите заголовок колонки"
+                                                onChange={(
+                                                    e: React.ChangeEvent<HTMLInputElement>,
+                                                ) => setColumnTitle(e.target.value)}
+                                                onBlur={() => editColumnTitle(columnTitle, id)}
                                             />
-                                        )
-                                    }
-                                })}
-                                {provided.placeholder}
-                            </div>
+                                            <Menu
+                                                title={
+                                                    <IconButton variant="default">
+                                                        <MdMoreHoriz size={18} />
+                                                    </IconButton>
+                                                }
+                                            >
+                                                <MenuItem
+                                                    onClick={() =>
+                                                        openPrompt(
+                                                            'Удаление колнки',
+                                                            'Удаляя колонку, вы также удалите всю информация с ней связаную, в том числе и задачи. Отмена невозможна',
+                                                            () => deleteColumn(id),
+                                                        )
+                                                    }
+                                                >
+                                                    Удалить колонку
+                                                </MenuItem>
+                                            </Menu>
+                                        </div>
+                                        <div className={styles.column_tasks}>
+                                            {tasks.map((task, index) => {
+                                                if (!task.isArchived) {
+                                                    return (
+                                                        <TaskCard
+                                                            title={task.title}
+                                                            description={task.description}
+                                                            id={task.id}
+                                                            index={index}
+                                                            key={task.id}
+                                                            onClick={openTaskInfoModal}
+                                                        />
+                                                    )
+                                                }
+                                            })}
+                                            {provided.placeholder}
+                                        </div>
 
-                            <div ref={createTaskRef} id={`${droppableId}-createTaskRef`}>
-                                {createTaskModal ? (
-                                    <CreateTaskCard
-                                        createTaskFoo={createTaskFoo}
-                                        cancel={() => setCreateTaskModal(false)}
-                                        column={{ id, title }}
-                                    />
-                                ) : (
-                                    <button
-                                        onClick={handleCreateTaskClick}
-                                        className={styles.createTask_button}
-                                    >
-                                        Создать задачу
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </>
+                                        <div
+                                            ref={createTaskRef}
+                                            id={`${droppableId}-createTaskRef`}
+                                        >
+                                            {createTaskModal ? (
+                                                <CreateTaskCard
+                                                    createTaskFoo={createTaskFoo}
+                                                    cancel={() => setCreateTaskModal(false)}
+                                                    column={{ id, title }}
+                                                />
+                                            ) : (
+                                                <button
+                                                    onClick={handleCreateTaskClick}
+                                                    className={styles.createTask_button}
+                                                >
+                                                    Создать задачу
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+                        </Droppable>
+                    </div>
                 )}
-            </Droppable>
+            </Draggable>
         </>
     )
 }
