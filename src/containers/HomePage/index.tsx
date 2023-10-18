@@ -6,6 +6,12 @@ import { useNavigate } from 'react-router-dom'
 import { Modal } from 'components/UI/Modal'
 import { Helmet } from 'react-helmet'
 import { usePrompt } from 'containers/PromptProvider'
+import { MdCheck } from 'react-icons/md'
+
+type BackgroundT = {
+    color: string
+    active: boolean
+}
 
 export const HomePage = () => {
     const [projects, setProjects] = useState<ProjectT[] | null>(null)
@@ -15,7 +21,14 @@ export const HomePage = () => {
     const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false)
     const [deleteProjectIndex, setDeleteProjectIndex] = useState<number>(0)
     const [projectName, setProjectName] = useState<string>('')
-    const [projectColor, setProjectColor] = useState<string>('#999')
+    const [backgrounds, setBackgrounds] = useState<BackgroundT[]>([
+        { color: '#777', active: false },
+        { color: '#a41c1c', active: false },
+        { color: '#1938e6', active: false },
+        { color: '#bd1d8b', active: false },
+        { color: '#41ff37', active: false },
+    ])
+    const [activeBackground, setActiveBackground] = useState<number>(0)
 
     const { openPrompt } = usePrompt()
 
@@ -48,7 +61,7 @@ export const HomePage = () => {
                 { title: 'Done', id: 'b7ac8b0a-634e-11ee-8c99-0242ac120002', tasks: [] },
             ],
             bg: {
-                color: color,
+                color: backgrounds[activeBackground].color,
             },
         }
         setProjects((prev) => {
@@ -58,7 +71,6 @@ export const HomePage = () => {
                 return [project]
             }
         })
-        setProjectColor('#000')
         setProjectName('')
         setNewProjectModal(false)
     }
@@ -98,20 +110,16 @@ export const HomePage = () => {
     const projectNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
         setProjectName(e.target.value)
 
-    const projectColorChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setProjectColor(e.target.value)
-
     const newProjectSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        addProject(projectName, projectColor)
+        addProject(projectName, backgrounds[activeBackground].color)
     }
 
     const editProjectSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        editProject(projectId, { title: projectName, color: projectColor })
+        editProject(projectId, { title: projectName, color: backgrounds[activeBackground].color })
         setEditProjectModal(false)
         setProjectName('')
-        setProjectColor('#999')
     }
 
     return (
@@ -154,7 +162,6 @@ export const HomePage = () => {
                                     e.stopPropagation()
                                     setProjectId(item.id)
                                     setProjectName(item.title)
-                                    setProjectColor(item.bg.color)
                                     setEditProjectModal(true)
                                 }}
                             />
@@ -169,7 +176,6 @@ export const HomePage = () => {
                     title={<h4>Создание проекта</h4>}
                     onClose={() => {
                         setNewProjectModal(false)
-                        setProjectColor('#999')
                         setProjectName('')
                     }}
                 >
@@ -184,13 +190,17 @@ export const HomePage = () => {
                             />
                         </label>
                         <label>
-                            <span>Выберите цвет*</span>
-                            <input
-                                type="color"
-                                value={projectColor}
-                                required
-                                onChange={projectColorChange}
-                            />
+                            <span>Выберите фон карточки*</span>
+                            <div className={styles.colors}>
+                                {backgrounds.map((bg, index) => (
+                                    <div
+                                        style={{ backgroundColor: bg.color }}
+                                        onClick={() => setActiveBackground(index)}
+                                    >
+                                        {activeBackground === index && <MdCheck />}
+                                    </div>
+                                ))}
+                            </div>
                         </label>
                         <button type="submit">Создать</button>
                     </form>
@@ -200,7 +210,6 @@ export const HomePage = () => {
                     show={editProjectModal}
                     title={<h4>Изменение проекта</h4>}
                     onClose={() => {
-                        setProjectColor('#999')
                         setProjectName('')
                         setEditProjectModal(false)
                     }}
@@ -216,13 +225,17 @@ export const HomePage = () => {
                             />
                         </label>
                         <label>
-                            <span>Выберите цвет*</span>
-                            <input
-                                type="color"
-                                value={projectColor}
-                                required
-                                onChange={projectColorChange}
-                            />
+                            <span>Выберите фон карточки*</span>
+                            <div className={styles.colors}>
+                                {backgrounds.map((bg, index) => (
+                                    <div
+                                        style={{ backgroundColor: bg.color }}
+                                        onClick={() => setActiveBackground(index)}
+                                    >
+                                        {activeBackground === index && <MdCheck />}
+                                    </div>
+                                ))}
+                            </div>
                         </label>
                         <button type="submit">Изменить</button>
                     </form>

@@ -561,9 +561,17 @@ export const ProjectPage = () => {
                                     ) : (
                                         <>
                                             <Button
-                                                onClick={() =>
+                                                onClick={() => {
                                                     changeTaskInfo('isArchived', false, taskInfo.id)
-                                                }
+                                                    setTaskArchive((prev) => {
+                                                        const taskArchiveCopy = [...prev]
+                                                        const index = taskArchiveCopy.findIndex(
+                                                            (task) => task.id === taskInfo.id,
+                                                        )
+                                                        taskArchiveCopy.splice(index, 1)
+                                                        return taskArchiveCopy
+                                                    })
+                                                }}
                                             >
                                                 Вернуть
                                             </Button>
