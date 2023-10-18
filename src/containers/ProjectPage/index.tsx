@@ -502,6 +502,15 @@ export const ProjectPage = () => {
                                             <div className={styles.editor_controls}>
                                                 <Button
                                                     onClick={() => {
+                                                        if (taskInfoDesc === '<p><br></p>') {
+                                                            changeTaskInfo(
+                                                                'description',
+                                                                '',
+                                                                taskInfo.id,
+                                                            )
+                                                            setTaskInfoDescEditable(false)
+                                                            return
+                                                        }
                                                         changeTaskInfo(
                                                             'description',
                                                             taskInfoDesc,
