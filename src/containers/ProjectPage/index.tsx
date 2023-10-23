@@ -81,6 +81,7 @@ export const ProjectPage = () => {
                 return {
                     ...column,
                     tasks: project.tasks
+
                         .filter((task) => task.column.id === column.id)
                         .sort((x, y) => x.position - y.position),
                 }
@@ -121,10 +122,12 @@ export const ProjectPage = () => {
         if (result.source.droppableId === 'board') {
             const updatedColumn = reorder(taskColumns, source.index, destination.index)
             setTaskColumns(updatedColumn)
+            setProjectInfo((prev: any) => {
+                return { ...prev, columns: updatedColumn }
+            })
         }
 
         const movedTask = projectInfo?.tasks.find((task) => task.id === result.draggableId)
-        const destinationColumnId = null
 
         if (source.droppableId === destination.droppableId && movedTask) {
             const sourceColumn = taskColumns.filter((column) => column.id === source.droppableId)[0]
