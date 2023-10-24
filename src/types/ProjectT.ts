@@ -7,7 +7,4 @@ export type ProjectT = {
     tasks: TaskT[]
     columns: TaskColumnT[]
     id: string
-    bg: {
-        color: string
-    }
 }
