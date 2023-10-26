@@ -9,12 +9,22 @@
     margin-bottom: 15px
 
   .projects
-    margin-top: 15px
-    display: flex
+    max-width: 1280px
+    margin: 15px auto
+    display: grid
+    grid-template-columns: repeat(4, 1fr)
+    gap: 10px
     align-items: flex-start
-    padding: 10px 15px 50px 15px
-    overflow-x: auto
-    overflow-y: hidden
+    padding: 10px 15px
+
+    @media screen and (max-width: 1070px)
+      grid-template-columns: repeat(3, 1fr)
+
+    @media screen and (max-width: 720px)
+      grid-template-columns: repeat(2, 1fr)
+
+    @media screen and (max-width: 500px)
+      grid-template-columns: repeat(1, 1fr)
 
 .form
   display: flex

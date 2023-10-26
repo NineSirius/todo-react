@@ -1,5 +1,5 @@
 .card
-  min-width: 250px
+  width: 100%
   min-height: 100px
   display: flex
   flex-direction: column
@@ -7,9 +7,11 @@
   padding: 15px
   border-radius: 10px
   background: var(--project-card-bg)
+  transition: background 0.3s
   margin-right: 10px
 
   &:hover
+    cursor: pointer
     backdrop-filter: brightness(60%)
     background: var(--project-card-hover-bg)
 
@@ -18,7 +20,21 @@
     display: flex
     align-items: center
     justify-content: space-between
+    gap: 10px
 
     h4
       color: var(--project-card-title-color)
       font-size: 1.5rem
+      word-break: break-all
+      text-align: left
+
+  .info
+    display: flex
+    align-items: center
+    gap: 10x
+
+    &_item
+      display: flex
+      align-items: center
+      gap: 4px
+      color: var(--text-color)

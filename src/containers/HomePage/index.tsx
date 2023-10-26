@@ -45,19 +45,6 @@ export const HomePage = () => {
 
     const navigate = useNavigate()
 
-    const handleDragEnd = (result: any) => {
-        if (!result.destination) return
-
-        const sourceIndex = result.source.index
-        const destinationIndex = result.destination.index
-
-        if (projects) {
-            const sortedProjects = reorder(projects, sourceIndex, destinationIndex)
-            console.log(sortedProjects)
-            setProjects(sortedProjects)
-        }
-    }
-
     const addProject = (title: string) => {
         const project: ProjectT = {
             title,
@@ -135,56 +122,48 @@ export const HomePage = () => {
                 <title>ToDo React - Создавайте и управляйте задачи</title>
             </Helmet>
             <div className={`${styles.home}`}>
-                <header className={styles.home_header}>
+                {/* <header className={styles.home_header}>
                     <h1>ToDo App</h1>
                     <p>Как Trello, только хуже</p>
-                </header>
-                <h2>Ваши проекты</h2>
+                </header> */}
+                <h2>Ваши доски</h2>
 
-                <DragDropContext onDragEnd={handleDragEnd}>
-                    <Droppable droppableId="projects" direction="horizontal" type="COLUMN">
-                        {(provided) => (
-                            <div
-                                className={styles.projects}
-                                ref={provided.innerRef}
-                                {...provided.droppableProps}
-                            >
-                                {projects &&
-                                    projects.map((item, index) => (
-                                        <ProjectCard
-                                            key={item.id}
-                                            title={item.title}
-                                            index={index}
-                                            id={item.id}
-                                            tasks={item.tasks}
-                                            createdAt={item.createdAt}
-                                            onClick={(event: React.MouseEvent<HTMLDivElement>) => {
-                                                navigate(`/projects/${item.id}`)
-                                            }}
-                                            // @ts-ignore
-                                            deleteProject={(e) => {
-                                                e.stopPropagation()
-                                                openPrompt(
-                                                    'Удаление проекта',
-                                                    'Вы действительно хотите удалить проект? Удаляя проект вы также потеряете все данные с ним связанные в том числе и задачи. После подтверждения отмена невозможна',
-                                                    () => deleteProject(index),
-                                                )
-                                            }}
-                                            //@ts-ignore
-                                            editProject={(e) => {
-                                                e.stopPropagation()
-                                                setProjectId(item.id)
-                                                setProjectName(item.title)
-                                                setEditProjectModal(true)
-                                            }}
-                                        />
-                                    ))}
-                            </div>
-                        )}
-                    </Droppable>
-                </DragDropContext>
+                <Button onClick={() => setNewProjectModal(true)} style={{ marginTop: 15 }}>
+                    Создать доску
+                </Button>
 
-                <Button onClick={() => setNewProjectModal(true)}>Создать проект</Button>
+                <div className={styles.projects}>
+                    {projects &&
+                        projects.map((item, index) => (
+                            <ProjectCard
+                                key={item.id}
+                                title={item.title}
+                                index={index}
+                                id={item.id}
+                                tasks={item.tasks}
+                                createdAt={item.createdAt}
+                                onClick={(event: React.MouseEvent<HTMLDivElement>) => {
+                                    navigate(`/projects/${item.id}`)
+                                }}
+                                // @ts-ignore
+                                deleteProject={(e) => {
+                                    e.stopPropagation()
+                                    openPrompt(
+                                        'Удаление проекта',
+                                        'Вы действительно хотите удалить проект? Удаляя проект вы также потеряете все данные с ним связанные в том числе и задачи. После подтверждения отмена невозможна',
+                                        () => deleteProject(index),
+                                    )
+                                }}
+                                //@ts-ignore
+                                editProject={(e) => {
+                                    e.stopPropagation()
+                                    setProjectId(item.id)
+                                    setProjectName(item.title)
+                                    setEditProjectModal(true)
+                                }}
+                            />
+                        ))}
+                </div>
 
                 <Modal
                     show={newProjectModal}
@@ -200,6 +179,7 @@ export const HomePage = () => {
                             <input
                                 type="text"
                                 value={projectName}
+                                maxLength={36}
                                 required
                                 onChange={projectNameChange}
                             />
@@ -223,6 +203,7 @@ export const HomePage = () => {
                             <input
                                 type="text"
                                 value={projectName}
+                                maxLength={36}
                                 required
                                 onChange={projectNameChange}
                             />
