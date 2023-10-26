@@ -6,9 +6,10 @@ import styles from './Menu.module.sass'
 type MenuProps = {
     title: React.ReactNode
     children: React.ReactNode
+    className?: string
 }
 
-export const Menu: React.FC<MenuProps> = ({ title, children }): JSX.Element => {
+export const Menu: React.FC<MenuProps> = ({ title, children, className }): JSX.Element => {
     const [show, setShow] = useState<boolean>(false)
     const [menuId, setMenuId] = useState<string | null>(null)
     const [clientWidth, setClientWidth] = useState<number>(0)
@@ -64,7 +65,7 @@ export const Menu: React.FC<MenuProps> = ({ title, children }): JSX.Element => {
 
     if (menuId) {
         return (
-            <div className={styles.menu} ref={menuRef} id={menuId}>
+            <div className={`${styles.menu} ${className && className}`} ref={menuRef} id={menuId}>
                 <div className={styles.menu_title} onClick={toggleShow}>
                     {title}
                 </div>

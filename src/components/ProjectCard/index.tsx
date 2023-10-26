@@ -3,7 +3,7 @@ import { ProjectT } from '../../types/ProjectT'
 import styles from './ProjectCard.module.sass'
 import { Menu, MenuItem } from 'components/UI/Menu'
 import MenuIcon from './menu-icon.png'
-import { MdTaskAlt } from 'react-icons/md'
+import { MdMoreHoriz, MdTaskAlt } from 'react-icons/md'
 
 interface ProjectCardProps extends ProjectT {
     index: number
@@ -27,7 +27,7 @@ export const ProjectCard: React.FC<ProjectCardProps> = ({
             <div className={styles.title_wrap}>
                 <h4>{title}</h4>
                 {editProject && deleteProject && (
-                    <Menu title={<img src={MenuIcon} alt="menu icon" style={{ width: 25 }} />}>
+                    <Menu title={<MdMoreHoriz size={28} className={styles.menu} />}>
                         <MenuItem onClick={editProject}>Изменить</MenuItem>
                         <MenuItem onClick={deleteProject}>Удалить</MenuItem>
                         {/* <MenuItem onClick={deleteProject}>Поделиться</MenuItem> */}

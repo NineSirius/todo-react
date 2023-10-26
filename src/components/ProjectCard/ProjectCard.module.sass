@@ -10,11 +10,6 @@
   transition: background 0.3s
   margin-right: 10px
 
-  &:hover
-    cursor: pointer
-    backdrop-filter: brightness(60%)
-    background: var(--project-card-hover-bg)
-
   .title_wrap
     width: 100%
     display: flex
@@ -28,6 +23,12 @@
       word-break: break-all
       text-align: left
 
+    .menu
+      transform: translateX(90%)
+      visibility: hidden
+      opacity: 0
+      transition: .2s
+
   .info
     display: flex
     align-items: center
@@ -38,3 +39,13 @@
       align-items: center
       gap: 4px
       color: var(--text-color)
+
+  &:hover
+    cursor: pointer
+    backdrop-filter: brightness(60%)
+    background: var(--project-card-hover-bg)
+
+    .title_wrap .menu
+      transform: translateX(0)
+      visibility: visible
+      opacity: 1
