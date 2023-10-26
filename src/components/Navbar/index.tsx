@@ -8,10 +8,11 @@ export const Navbar = () => {
             <div className={`${styles.navbar_content} container`}>
                 <div className={styles.left}>
                     <Link to="/" className={styles.logo}>
-                        ToDO
+                        ToDo
                     </Link>
                     <div className={styles.navbar_links}>
-                        <Link to="/">Проекты</Link>
+                        <Link to="/">Доски</Link>
+                        {/* <Link to="/">Чек-листы</Link> */}
                     </div>
                 </div>
 
