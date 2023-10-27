@@ -1,0 +1,23 @@
+.tooltip
+  position: relative
+
+  .title
+    width: max-content
+    position: absolute
+    bottom: 20px
+    left: 50%
+    transform: translate(-50%, -10px)
+    background: var(--tooltip-bg)
+    padding: 5px
+    color: var(--tooltip-text-color)
+    border-radius: 5px
+    visibility: hidden
+    opacity: 0
+    transition: .2s
+    will-change: transform
+
+  &:hover
+    .title
+      visibility: visible
+      opacity: 1
+      transform: translate(-50%, 0)
