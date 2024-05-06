@@ -10,6 +10,7 @@ import { MdCheck } from 'react-icons/md'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { Button } from 'components/UI/Button'
 import { v4 as uuidv4 } from 'uuid'
+import { Alert } from 'components/UI/Alert'
 
 type BackgroundT = {
     color: string
@@ -122,17 +123,14 @@ export const HomePage = () => {
                 <title>ToDo React - Создавайте и управляйте задачи</title>
             </Helmet>
             <div className={`${styles.home}`}>
-                {/* <header className={styles.home_header}>
-                    <h1>ToDo App</h1>
-                    <p>Как Trello, только хуже</p>
-                </header> */}
-                <h2>Ваши доски</h2>
+                <Alert variant='error'>Все проекты хранятся локально, то есть в вашем браузере. И если вы удалите данные браузера или сайта, то все ваши проекты пропадут.</Alert>
 
-                <Button onClick={() => setNewProjectModal(true)} style={{ marginTop: 15 }}>
-                    Создать доску
-                </Button>
+                <h2 style={{ marginTop: 10 }}>Ваши проекты</h2>
 
                 <div className={styles.projects}>
+                    <button className={styles.createProjectCard} onClick={() => setNewProjectModal(true)}>
+                        <h3>Создать проект</h3>
+                    </button>
                     {projects &&
                         projects.map((item, index) => (
                             <ProjectCard

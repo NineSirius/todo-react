@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './Button.module.sass'
+import clsx from "clsx"
 
 interface ButtonProps {
     children: React.ReactNode
@@ -17,8 +18,8 @@ export const Button: React.FC<ButtonProps> = ({
     style,
 }): JSX.Element => {
     return (
-        <button
-            className={`${className && className} ${styles.button} ${variant && styles[variant]}`}
+        <button //${className && className} ${styles.button} ${variant && styles[variant]}
+            className={clsx(styles.button, className && className, variant && styles[variant])}
             onClick={onClick}
             style={style}
         >

@@ -76,87 +76,87 @@ export const TaskColumn: React.FC<TaskColumnProps> = ({
                         {...provided.dragHandleProps}
                         {...provided.draggableProps}
                     >
-                        <Droppable droppableId={droppableId} ignoreContainerClipping={true}>
-                            {(provided) => (
-                                <>
-                                    <div
-                                        className={styles.column_content}
-                                        {...provided.droppableProps}
-                                        ref={provided.innerRef}
-                                        id={droppableId}
-                                    >
-                                        <div className={styles.columnTitle}>
-                                            <input
-                                                type="text"
-                                                className={styles.input}
-                                                value={columnTitle}
-                                                placeholder="Введите заголовок колонки"
-                                                onChange={(
-                                                    e: React.ChangeEvent<HTMLInputElement>,
-                                                ) => setColumnTitle(e.target.value)}
-                                                onBlur={() => editColumnTitle(columnTitle, id)}
-                                            />
-                                            <Menu
-                                                title={
-                                                    <IconButton variant="default">
-                                                        <MdMoreHoriz size={18} />
-                                                    </IconButton>
-                                                }
-                                            >
-                                                <MenuItem
-                                                    onClick={() =>
-                                                        openPrompt(
-                                                            'Удаление колнки',
-                                                            'Удаляя колонку, вы также удалите всю информация с ней связаную, в том числе и задачи. Отмена невозможна',
-                                                            () => deleteColumn(id),
-                                                        )
-                                                    }
-                                                >
-                                                    Удалить колонку
-                                                </MenuItem>
-                                            </Menu>
-                                        </div>
-                                        <div className={styles.column_tasks}>
-                                            {tasks.map((task, index) => {
-                                                if (!task.isArchived) {
-                                                    return (
-                                                        <TaskCard
-                                                            title={task.title}
-                                                            description={task.description}
-                                                            id={task.id}
-                                                            index={index}
-                                                            key={task.id}
-                                                            onClick={openTaskInfoModal}
-                                                        />
-                                                    )
-                                                }
-                                            })}
-                                            {provided.placeholder}
-                                        </div>
+                        <>
+                            <div
+                                className={styles.column_content}
 
-                                        <div
-                                            ref={createTaskRef}
-                                            id={`${droppableId}-createTaskRef`}
+                            >
+                                <div className={styles.columnTitle}>
+                                    <input
+                                        type="text"
+                                        className={styles.input}
+                                        value={columnTitle}
+                                        placeholder="Введите заголовок колонки"
+                                        onChange={(
+                                            e: React.ChangeEvent<HTMLInputElement>,
+                                        ) => setColumnTitle(e.target.value)}
+                                        onBlur={() => editColumnTitle(columnTitle, id)}
+                                    />
+                                    <Menu
+                                        title={
+                                            <IconButton variant="default">
+                                                <MdMoreHoriz size={18} />
+                                            </IconButton>
+                                        }
+                                    >
+                                        <MenuItem
+                                            onClick={() =>
+                                                openPrompt(
+                                                    'Удаление колнки',
+                                                    'Удаляя колонку, вы также удалите всю информация с ней связаную, в том числе и задачи. Отмена невозможна',
+                                                    () => deleteColumn(id),
+                                                )
+                                            }
                                         >
-                                            {createTaskModal ? (
-                                                <CreateTaskCard
-                                                    createTaskFoo={createTaskFoo}
-                                                    cancel={() => setCreateTaskModal(false)}
-                                                    column={{ id, title }}
-                                                />
-                                            ) : (
-                                                <button
-                                                    onClick={handleCreateTaskClick}
-                                                    className={styles.createTask_button}
-                                                >
-                                                    Создать задачу
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-                        </Droppable>
+                                            Удалить колонку
+                                        </MenuItem>
+                                    </Menu>
+                                </div>
+                                <Droppable droppableId={droppableId} ignoreContainerClipping={true}>
+                                    {(provided) =>
+                                    (<div className={styles.column_tasks}  {...provided.droppableProps}
+                                        ref={provided.innerRef}
+                                        id={droppableId}>
+                                        {tasks.map((task, index) => {
+                                            if (!task.isArchived) {
+                                                return (
+                                                    <TaskCard
+                                                        title={task.title}
+                                                        description={task.description}
+                                                        id={task.id}
+                                                        index={index}
+                                                        key={task.id}
+                                                        onClick={openTaskInfoModal}
+                                                    />
+                                                )
+                                            }
+                                        })}
+                                        {provided.placeholder}
+                                    </div>)
+                                    }
+                                </Droppable>
+
+                                <div
+                                    ref={createTaskRef}
+                                    id={`${droppableId}-createTaskRef`}
+                                >
+                                    {createTaskModal ? (
+                                        <CreateTaskCard
+                                            createTaskFoo={createTaskFoo}
+                                            cancel={() => setCreateTaskModal(false)}
+                                            column={{ id, title }}
+                                        />
+                                    ) : (
+                                        <button
+                                            onClick={handleCreateTaskClick}
+                                            className={styles.createTask_button}
+                                        >
+                                            Создать задачу
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </>
                     </div>
                 )}
             </Draggable>

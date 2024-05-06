@@ -336,16 +336,6 @@ export const ProjectPage = () => {
 
     const deleteColumn = (columnId: string) => {
         if (projectInfo) {
-            // setTaskColumns((prev) => {
-            //     const taskColumnsCopy = [...prev]
-            //     const targetColumnIndex = taskColumnsCopy.findIndex(
-            //         (column) => column.id === columnId,
-            //     )
-            //     taskColumnsCopy.splice(targetColumnIndex, 1)
-
-            //     return taskColumnsCopy
-            // })
-
             setProjectInfo((prev: any) => {
                 const projectInfoCopy = { ...prev }
                 const targetColumnIndex = projectInfoCopy.columns.findIndex(
@@ -392,34 +382,38 @@ export const ProjectPage = () => {
                     <MenuItem onClick={() => enqueueSnackbar('Скоро')}>Экспорт</MenuItem>
                 </Menu>
             </div>
-            <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="board" direction="horizontal" type="COLUMN">
-                    {(provided) => (
-                        <div
-                            className={styles.board}
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                        >
-                            {taskColumns &&
-                                taskColumns.map((column: TaskColumnT, index) => (
-                                    <TaskColumn
-                                        key={column.id}
-                                        id={column.id}
-                                        title={column.title}
-                                        droppableId={column.id}
-                                        tasks={column.tasks}
-                                        createTaskFoo={createTask}
-                                        openTaskInfoModal={openTaskInfoModal}
-                                        editColumnTitle={editColumnTitle}
-                                        deleteColumn={deleteColumn}
-                                        index={index}
-                                    />
-                                ))}
-                            <CreateTaskColumn createColumn={createColumn} />
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
+            <div
+                className={styles.board}
+
+            >
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="board" direction="horizontal" type="COLUMN" ignoreContainerClipping={true}>
+                        {(provided) => (
+                            <div
+                                ref={provided.innerRef}
+                                {...provided.droppableProps}
+                                className={styles.columns}>
+                                {taskColumns &&
+                                    taskColumns.map((column: TaskColumnT, index) => (
+                                        <TaskColumn
+                                            key={column.id}
+                                            id={column.id}
+                                            title={column.title}
+                                            droppableId={column.id}
+                                            tasks={column.tasks}
+                                            createTaskFoo={createTask}
+                                            openTaskInfoModal={openTaskInfoModal}
+                                            editColumnTitle={editColumnTitle}
+                                            deleteColumn={deleteColumn}
+                                            index={index}
+                                        />
+                                    ))}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+                <CreateTaskColumn createColumn={createColumn} />
+            </div>
 
             <Modal
                 title={

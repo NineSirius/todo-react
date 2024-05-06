@@ -68,14 +68,23 @@ $task-card-bg: var(--task-card-bg)
   overflow-x: auto
   padding: 0 15px
 
+  .columns
+    display: flex
+
 .createTaskColumn
   min-width: max-content
-  padding: 15px
+  padding: 5px 10px
   margin-right: 20px
   border-radius: 10px
   background: $task-column-bg
   height: max-content
   transition: .2s
+
+  input
+    border: none
+    background: var(--main-bg)
+    border: 1px solid var(--border-color)
+    padding: 10px
 
   &_controls
     margin-top: 10px
@@ -83,9 +92,9 @@ $task-card-bg: var(--task-card-bg)
     align-items: center
     gap: 10px
 
-  &:hover
-    cursor: pointer
-    background: #f5f5f5
+  // &:hover
+    // cursor: pointer
+    // background: #f5f5f5
 
 .column
   width: 305px
@@ -102,7 +111,7 @@ $task-card-bg: var(--task-card-bg)
   &_content
     display: flex
     flex-direction: column
-    gap: 10px
+    gap: 0
 
   .columnTitle
     display: flex
@@ -121,10 +130,12 @@ $task-card-bg: var(--task-card-bg)
       background: $primary-color
 
   &_tasks
+    margin-top: 10px
     display: flex
     flex-direction: column
 
   .createTask_button
+    margin-top: 5px
     background: none
     border: none
     outline: none
@@ -152,11 +163,16 @@ $task-card-bg: var(--task-card-bg)
     background: none
     width: 100%
     font-size: 15px
+    padding: 0
 
   .titleWrap
     display: flex
     flex-direction: column
     gap: 6px
+
+    .title
+      // word-break: break-all
+      overflow-wrap: break-word
 
   &_archiveTaskControls
     margin-top: 10px

@@ -8,12 +8,21 @@
     font-size: 1.5rem
     font-weight: 700
 
-  a
+  .link
+    display: inline-flex
+    gap: 10px
+    font-weight: 500
     color: var(--nav-link-color)
     text-decoration: none
+    padding: 7px
+    border-radius: 5px
+    border: none
+    outline: none
+    background: transparent
 
     &:hover
-      text-decoration: underline
+      cursor: pointer
+      background: var(--project-card-hover-bg)
 
   &_content
     display: flex

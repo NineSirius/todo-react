@@ -1,0 +1,23 @@
+.alert
+    width: max-content
+    display: flex
+    flex-direction: column
+    gap: 10px
+    padding: 10px
+    border-radius: 10px
+    color: var(--light)
+
+    button
+        border: none
+        background: none
+        padding: 5px
+        color: var(--light)
+        &:hover
+            cursor: pointer
+
+    &.default
+        background: var(--primary)
+
+    &.error
+        color: var(--error)
+        background: #fdeded
