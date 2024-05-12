@@ -1,0 +1,57 @@
+.form
+    display: flex
+    flex-direction: column
+    gap: 10px
+    padding-top: 10px
+
+label
+    display: flex
+    flex-direction: column
+    gap: 5px
+
+    span
+        text-align: left
+        font-size: 1.25rem
+
+    input
+        outline: none
+        padding: 5px 5px
+        border: 2px solid var(--border-color)
+        border-radius: 2px
+        background: none
+        font-size: 1.15rem
+
+    &:focus
+        border: 2px solid var(--primary)
+
+.colors
+    display: flex
+    align-items: center
+    gap: 5px
+
+    div
+        width: 20%
+        height: 25px
+        display: flex
+        align-items: center
+        justify-content: center
+        color: #fff
+
+    &:hover
+        cursor: pointer
+
+    &.active
+        background
+
+.delete_wrap
+    display: flex
+    flex-direction: column
+    gap: 10px
+
+.buttons
+    display: flex
+    align-items: center
+    gap: 10px
+
+    button
+        width: 50%

@@ -11,6 +11,8 @@ import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import { Button } from 'components/UI/Button'
 import { v4 as uuidv4 } from 'uuid'
 import { Alert } from 'components/UI/Alert'
+import { useModal } from '@containers/ModalProvider'
+import { ProjectControlsModal } from '@components/Modals/ProjectControlsModal'
 
 type BackgroundT = {
     color: string
@@ -29,9 +31,10 @@ export const HomePage = () => {
     const [newProjectModal, setNewProjectModal] = useState<boolean>(false)
     const [editProjectModal, setEditProjectModal] = useState<boolean>(false)
     const [projectId, setProjectId] = useState<string>('')
-    const [projectName, setProjectName] = useState<string>('')
+    const [startMessage, setStartMessage] = useState<any>(localStorage.getItem("start_message") || true)
 
     const { openPrompt } = usePrompt()
+    const { openModal, closeModal } = useModal()
 
     useEffect(() => {
         const projects = localStorage.getItem('projects')
@@ -69,7 +72,6 @@ export const HomePage = () => {
                 return [project]
             }
         })
-        setProjectName('')
         setNewProjectModal(false)
     }
 
@@ -102,19 +104,28 @@ export const HomePage = () => {
         })
     }
 
-    const projectNameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-        setProjectName(e.target.value)
-
-    const newProjectSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const newProjectSubmit = (projectName: string) => {
         addProject(projectName)
+        closeModal()
+
     }
 
-    const editProjectSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+    const editProjectSubmit = (projectName: string) => {
         editProject(projectId, projectName)
-        setEditProjectModal(false)
-        setProjectName('')
+        closeModal()
+    }
+
+    const onAlertClose = () => {
+        setStartMessage(false)
+        localStorage.setItem("start_message", "false")
+    }
+
+    const openNewProjectModal = () => {
+        openModal(<ProjectControlsModal type='add' onSubmit={newProjectSubmit} projectId={projectId} />, "Создание проекта")
+    }
+
+    const openEditProjectModal = (title: string) => {
+        openModal(<ProjectControlsModal type='edit' onSubmit={editProjectSubmit} projectId={projectId} title={title} />, "Редактирование проекта")
     }
 
     return (
@@ -123,12 +134,14 @@ export const HomePage = () => {
                 <title>ToDo React - Создавайте и управляйте задачи</title>
             </Helmet>
             <div className={`${styles.home}`}>
-                <Alert variant='error'>Все проекты хранятся локально, то есть в вашем браузере. И если вы удалите данные браузера или сайта, то все ваши проекты пропадут.</Alert>
+                {!startMessage || startMessage !== "false" && <Alert variant='error' onClose={onAlertClose}>
+                    Все проекты хранятся локально, то есть в вашем браузере. И если вы удалите данные вашего браузера или сайта, то все ваши проекты пропадут.
+                </Alert>}
 
                 <h2 style={{ marginTop: 10 }}>Ваши проекты</h2>
 
                 <div className={styles.projects}>
-                    <button className={styles.createProjectCard} onClick={() => setNewProjectModal(true)}>
+                    <button className={styles.createProjectCard} onClick={openNewProjectModal}>
                         <h3>Создать проект</h3>
                     </button>
                     {projects &&
@@ -156,60 +169,11 @@ export const HomePage = () => {
                                 editProject={(e) => {
                                     e.stopPropagation()
                                     setProjectId(item.id)
-                                    setProjectName(item.title)
-                                    setEditProjectModal(true)
+                                    openEditProjectModal(item.title)
                                 }}
                             />
                         ))}
                 </div>
-
-                <Modal
-                    show={newProjectModal}
-                    title={<h4>Создание проекта</h4>}
-                    onClose={() => {
-                        setNewProjectModal(false)
-                        setProjectName('')
-                    }}
-                >
-                    <form onSubmit={newProjectSubmit} className={styles.form}>
-                        <label>
-                            <span>Название проекта*</span>
-                            <input
-                                type="text"
-                                value={projectName}
-                                maxLength={36}
-                                required
-                                onChange={projectNameChange}
-                            />
-                        </label>
-
-                        <Button>Создать</Button>
-                    </form>
-                </Modal>
-
-                <Modal
-                    show={editProjectModal}
-                    title={<h4>Изменение проекта</h4>}
-                    onClose={() => {
-                        setProjectName('')
-                        setEditProjectModal(false)
-                    }}
-                >
-                    <form onSubmit={editProjectSubmit} className={styles.form}>
-                        <label>
-                            <span>Название проекта*</span>
-                            <input
-                                type="text"
-                                value={projectName}
-                                maxLength={36}
-                                required
-                                onChange={projectNameChange}
-                            />
-                        </label>
-
-                        <Button>Изменить</Button>
-                    </form>
-                </Modal>
             </div>
         </>
     )

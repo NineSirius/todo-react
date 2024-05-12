@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 import { useState, useRef, useEffect } from 'react'
 import styles from './Menu.module.sass'
+import { v4 as uuidv4 } from 'uuid'
+import clsx from "clsx"
 
 type MenuProps = {
     title: React.ReactNode
@@ -12,9 +13,8 @@ type MenuProps = {
 export const Menu: React.FC<MenuProps> = ({ title, children, className }): JSX.Element => {
     const [show, setShow] = useState<boolean>(false)
     const [menuId, setMenuId] = useState<string | null>(null)
-    const [clientWidth, setClientWidth] = useState<number>(0)
-    const [left, setLeft] = useState<number>(0)
-    const [right, setRight] = useState<number>(0)
+    const [position, setPosition] = useState<any>({ top: 0, left: 0 })
+    const [menuWidth, setMenuWidth] = useState<number>(0)
 
     const menuRef = useRef<any>(null)
     const menuContentRef = useRef<any>(null)
@@ -42,26 +42,21 @@ export const Menu: React.FC<MenuProps> = ({ title, children, className }): JSX.E
         setMenuId(() => uuidv4())
     }, [])
 
-    useEffect(() => {
-        if (menuContentRef.current) {
-            setClientWidth(menuContentRef.current.clientWidth)
-        }
-    }, [menuContentRef])
 
     useEffect(() => {
-        if (menuId) {
-            const element = document.getElementById(menuId)
+        if (show && menuRef.current) {
+            const dropdownRect = menuRef.current.getBoundingClientRect();
+            const spaceLeft = dropdownRect.left;
 
-            if (element && show) {
-                const rect = element.getBoundingClientRect()
-                const windowWidth = window.innerWidth
-                const distanceToLeft = rect.left
-                const distanceToRight = windowWidth - rect.right
-                setLeft(distanceToLeft)
-                setRight(distanceToRight)
-            }
+
+            const left = spaceLeft + menuContentRef.current.clientWidth
+            const top = dropdownRect.bottom;
+
+            setPosition({ top, left, width: menuContentRef.current.clientWidth, body: document.body.clientWidth });
+            console.log({ ref: menuRef.current })
+            console.log({ top, left, screen: window.innerWidth })
         }
-    }, [menuId, show])
+    }, [show]);
 
     if (menuId) {
         return (
@@ -70,11 +65,9 @@ export const Menu: React.FC<MenuProps> = ({ title, children, className }): JSX.E
                     {title}
                 </div>
                 <div
-                    className={`${styles.menu_content} ${show && styles.active} ${
-                        right < clientWidth ? styles.right : styles.left
-                    }`}
+                    className={clsx(styles.menu_content, show && styles.active, position.left < position.body ? styles.left : styles.right)}
                     ref={menuContentRef}
-                    // @ts-ignore
+                // @ts-ignore
                 >
                     {children}
                 </div>
